@@ -17,7 +17,7 @@ function App() {
           Hello World
         </a>
         <p className="home-desc">
-          Hosting this website on a Raspberry Pi is the first thing I decided to do when I got it as a birthday gift from my fiancee 
+          This website is hosted on a Raspberry Pi in my home.
         </p>
       </header>
       <div id="toasty">

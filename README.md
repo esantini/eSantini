@@ -1,7 +1,7 @@
 # My personal website
 
 Created & hosted with a Raspberry Pi on my home.
-Visit [eSantini.com](https://esantini.com/) to see if it's running.
+Visit [eSantini.com](http://esantini.com/) to see if it's running.
 
 # Getting Started with Create React App
 
