@@ -1,17 +1,31 @@
 import Home from './home/Home';
-import toasty from './spiderToasty.png'
+import RaspberryPi from './raspberry-pi/RaspberryPi';
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route
+} from 'react-router-dom';
+
 import './App.css';
+import toasty from './spiderToasty.png';
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <Home />
-      </header>
-      <div id="toasty">
-        <img alt="" src={toasty} />
+    <Router>
+      <div className="App">
+        <Switch>
+          <Route exact path="/">
+            <Home />
+          </Route>
+          <Route path="/raspberrypi">
+            <RaspberryPi />
+          </Route>
+        </Switch>
+        <div id="toasty">
+          <img alt="" src={toasty} />
+        </div>
       </div>
-    </div>
+    </Router>
   );
 }
 

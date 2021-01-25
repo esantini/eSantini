@@ -9,6 +9,11 @@
 ##
 
 ##
+# sudo /etc/init.d/nginx restart
+# sudo nginx -t
+##
+
+##
 # Remember if configuring SSL for https: port-forward ports 80 & 443
 ##
 
@@ -34,16 +39,21 @@ server {
 
 	root /home/pi/repos/eSantini/build;
 
-	index index.html index.htm index.nginx-debian.html;
+	index index.html;
 
 	server_name esantini.com www.esantini.com;
 
+    # URI routing
+    location /api/weather {
+        limit_except GET {
+            deny all; 
+        }
+        error_page 403 = @405; # Convert deny response from 403 (Forbidden) to 405 (Method Not Allowed)
+        proxy_pass http://localhost:3001/api/weather;
+    }
+
 	location / {
-		proxy_pass http://localhost:5000;
-		include /etc/nginx/mime.types;
-		# First attempt to serve request as file, then
-		# as directory, then fall back to displaying a 404.
-		try_files $uri $uri/ =404;
+		try_files $uri /index.html;
 	}
 
 	location /static {
