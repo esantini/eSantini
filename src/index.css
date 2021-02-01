@@ -7,7 +7,57 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+main {
+  align-items: center;
+  background-color: #001818;
+  color: #ddd;
+  display: flex;
+  flex-direction: column;
+  font-size: calc(10px + 2vmin);
+  justify-content: center;
+  min-height: 100vh;
+  text-align: center;
+}
+
+h1,
+h2,
+h3 {
+  color: beige;
+  font-family: monospace;
+}
+
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+
+/* Animation on "Konami Code" image */
+#toasty {
+  display: block;
+  position: fixed;
+  bottom: 0;
+  right: -130px;
+  z-index: 999;
+
+  -webkit-transition-property: right;
+  -moz-transition-property: right;
+  -o-transition-property: right;
+  -ms-transition-property: right;
+  transition-property: right;
+
+  -webkit-transition-duration: 0.2s;
+  -moz-transition-duration: 0.2s;
+  -o-transition-duration: 0.2s;
+  -ms-transition-duration: 0.2s;
+  transition-duration: 0.2s;
+
+  -webkit-transition-timing-function: linear;
+  transition-timing-function: linear;
+}
+#toasty img {
+  width: 130px;
+  height: auto;
+}
+#toasty.show {
+  right: 0px;
 }

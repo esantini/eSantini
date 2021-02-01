@@ -1,18 +1,13 @@
-import Home from './home/Home';
-import RaspberryPi from './raspberry-pi/RaspberryPi';
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route
-} from 'react-router-dom';
+import Home from './pages/Home';
+import RaspberryPi from './pages/RaspberryPi';
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 
-import './App.css';
-import toasty from './spiderToasty.png';
+import toasty from './images/spiderToasty.png';
 
 function App() {
   return (
     <Router>
-      <div className="App">
+      <main>
         <Switch>
           <Route exact path="/">
             <Home />
@@ -21,9 +16,9 @@ function App() {
             <RaspberryPi />
           </Route>
         </Switch>
-        <div id="toasty">
-          <img alt="" src={toasty} />
-        </div>
+      </main>
+      <div id="toasty">
+        <img alt="" src={toasty} />
       </div>
     </Router>
   );
