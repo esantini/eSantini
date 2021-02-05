@@ -1,20 +1,19 @@
-/* eslint-disable no-undef */
-
 const express = require('express');
 const senseLeds = require('sense-hat-led');
 const imu = require('node-sense-hat').Imu;
 
+const PORT = process.env.PORT || 3003;
+
 const app = express();
 app.use(express.json());
-app.set('port', process.env.PORT || 3001);
-
-const IMU = new imu.IMU();
+app.set('port', PORT);
 
 // Express only serves static assets in production
 if (process.env.NODE_ENV === 'production') {
   app.use(express.static('client/build'));
 }
 
+const IMU = new imu.IMU();
 app.get('/api/weather', (req, res) => {
   //   const param = req.query.q;
 

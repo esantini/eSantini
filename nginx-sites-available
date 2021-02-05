@@ -2,6 +2,12 @@
 
 ## Copy the contents of this file into: /etc/nginx/sites-available/default
 
+##
+# sudo /etc/init.d/nginx start
+# sudo /etc/init.d/nginx restart
+# sudo nginx -t
+##
+
 ## 
 # Get certificate:
 # sudo apt-get install certbot python-certbot-nginx
@@ -9,15 +15,8 @@
 ##
 
 ##
-# sudo /etc/init.d/nginx restart
-# sudo nginx -t
-##
-
-##
 # Remember if configuring SSL for https: port-forward ports 80 & 443
 ##
-
-## TODO Setup PM2 process manager to keep app running: https://gist.github.com/bradtraversy/cd90d1ed3c462fe3bddd11bf8953a896
 
 ##
 # You should look at the following URL's in order to grasp a solid understanding
