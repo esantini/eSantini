@@ -32,6 +32,8 @@ Run `pm2 startup` and follow the instruction.
 
 ### Serve Build Files & Run API
 
+From the project's main folder run the following commands:
+
 Serve static files in `/build` folder:
 
 ```bash
@@ -41,7 +43,7 @@ pm2 serve -s build --name "e-santini"
 Run the NodeJS API server:
 
 ```bash
-NODE_ENV=production PORT=3001 pm2 start server.js
+NODE_ENV=production PORT=3001 pm2 start api/server.js
 ```
 
 ### Save Configuration

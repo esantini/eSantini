@@ -3,13 +3,14 @@ const senseLeds = require('sense-hat-led');
 const imu = require('node-sense-hat').Imu;
 
 const PORT = process.env.PORT || 3003;
+const IS_PROD = process.env.NODE_ENV === 'production';
 
 const app = express();
 app.use(express.json());
 app.set('port', PORT);
 
 // Express only serves static assets in production
-if (process.env.NODE_ENV === 'production') {
+if (IS_PROD) {
   app.use(express.static('client/build'));
 }
 
@@ -40,7 +41,9 @@ if (senseLeds) {
   startShowMessage();
 }
 function startShowMessage() {
-  senseLeds.showMessage(` ${message} `, 0.1, [255, 0, 0], startShowMessage);
+  if (IS_PROD) {
+    senseLeds.showMessage(` ${message} `, 0.1, [255, 0, 0], startShowMessage);
+  }
 }
 
 app.get('/api/message', (req, res) => res.json({ message }));
