@@ -1,6 +1,7 @@
 const express = require('express');
 const senseLeds = require('sense-hat-led');
 const imu = require('node-sense-hat').Imu;
+const { addMessage, getMessage, init: dbInit } = require('./database');
 
 const PORT = process.env.PORT || 3003;
 const IS_PROD = process.env.NODE_ENV === 'production';
@@ -35,8 +36,10 @@ app.listen(app.get('port'), () => {
   console.log(`Find the server at: http://localhost:${app.get('port')}/`); // eslint-disable-line no-console
 });
 
-// LED MESSAGE:
+// LED message in sense-hat:
 let message = 'Hello World!';
+// cannot getMessage() before database is initialized so set message in dbInit(cb)
+dbInit(() => message = getMessage());
 if (senseLeds) {
   startShowMessage();
 }
@@ -48,7 +51,13 @@ function startShowMessage() {
 
 app.get('/api/message', (req, res) => res.json({ message }));
 app.post('/api/message', (req, res) => {
-  console.log(new Date(), ` setting message ${req.body?.message}`);
-  message = req.body?.message || message;
+  if (req.body?.message) {
+    message = req.body.message;
+    console.log(new Date(), ` setting message ${message}`);
+    addMessage({
+      message,
+      ip: req.headers['x-forwarded-for']
+    });
+  }
   res.sendStatus(200);
 });

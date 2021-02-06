@@ -11,6 +11,7 @@
     "@testing-library/user-event": "^12.1.10",
     "express": "^4.17.1",
     "lodash": "^4.17.20",
+    "lokijs": "^1.5.11",
     "node-sense-hat": "^0.0.2",
     "prop-types": "^15.7.2",
     "react": "^17.0.1",
