@@ -1,6 +1,8 @@
 require('./init.js'); // Sets global.config from api/config.json && privateConfig.json
 const express = require('express');
 const { addMessage, getMessage, init: dbInit } = require('./database');
+let sendSMS;
+if (config.smsEnabled) sendSMS = require('./sendSms');
 
 const IS_PROD = config.env === 'prod';
 
@@ -62,6 +64,7 @@ app.post('/api/message', (req, res) => {
       message,
       ip: req.headers['x-forwarded-for']
     });
+    if (config.smsEnabled) sendSMS(message);
   }
   res.sendStatus(200);
 });

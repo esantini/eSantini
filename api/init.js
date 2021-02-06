@@ -3,11 +3,15 @@ const configs = require('./config.json');
 
 // A `privateConfig.json` file is created from this object
 const template = {
-  default: {
-    phone_number: 'update value in generated file "privateConfig.json" to keep it a secret',
-  },
+  default: {},
   production: {
-    api_key: '', // DON'T PUT API KEY HERE, update value in file privateConfig.json
+    smsEnabled: true,
+    twilio: {
+      authToken: "", // DON'T PUT API KEY HERE, update values in file privateConfig.json
+      accountSid: "",
+      fromNumber: "",
+      phoneNumber: "",
+    }
   },
 };
 
