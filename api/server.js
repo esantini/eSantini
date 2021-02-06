@@ -1,14 +1,14 @@
+require('./init.js'); // Sets global.config from api/config.json && privateConfig.json
 const express = require('express');
 const senseLeds = require('sense-hat-led');
 const imu = require('node-sense-hat').Imu;
 const { addMessage, getMessage, init: dbInit } = require('./database');
 
-const PORT = process.env.PORT || 3003;
-const IS_PROD = process.env.NODE_ENV === 'production';
+const IS_PROD = config.env === 'prod';
 
 const app = express();
 app.use(express.json());
-app.set('port', PORT);
+app.set('port', config.apiPort);
 
 // Express only serves static assets in production
 if (IS_PROD) {

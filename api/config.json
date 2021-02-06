@@ -1,0 +1,12 @@
+{
+  "default": {
+    "env": "dev",
+    "apiPort": 3003,
+    "database": "devDatabase.db"
+  },
+  "production": {
+    "env": "prod",
+    "apiPort": 3001,
+    "database": "myDatabase.db"
+  }
+}
