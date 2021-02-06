@@ -44,7 +44,7 @@ if (config.senseHatEnabled) {
   if (IS_PROD) {
     startShowMessage();
     function startShowMessage() {
-      senseLeds.showMessage(` ${message} `, 0.1, [255, 0, 0], startShowMessage);
+      senseLeds.showMessage(` ${message} `, 0.1, [64, 0, 0], startShowMessage);
     }
   }
 } else {
