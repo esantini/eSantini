@@ -2,7 +2,8 @@
   "default": {
     "env": "dev",
     "apiPort": 3003,
-    "database": "devDatabase.db"
+    "database": "devDatabase.db",
+    "senseHatEnabled": true
   },
   "production": {
     "env": "prod",
