@@ -30,3 +30,4 @@ yarn.lock
 # privateConfig.json will be generated from api/init.js
 # Use privateConfig.json to add api-keys or other sensitive variables.
 privateConfig.json
+access.log

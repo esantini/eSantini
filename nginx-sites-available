@@ -36,11 +36,13 @@ server {
 	listen [::]:443 ssl http2 default_server;
 	ssl on;
 
+	server_name esantini.com www.esantini.com;
+
 	root /home/pi/repos/eSantini/build;
 
-	index index.html;
-
-	server_name esantini.com www.esantini.com;
+	location / {
+		try_files $uri /index.html;
+	}
 
     # URI routing
     location /api/weather {
@@ -57,14 +59,6 @@ server {
         error_page 403 = @405; # Convert deny response from 403 (Forbidden) to 405 (Method Not Allowed)
         proxy_pass http://localhost:3001/api/message;
     }
-
-	location / {
-		try_files $uri /index.html;
-	}
-
-	location /static {
-		autoindex on;
-	}
 
     ssl_certificate /etc/letsencrypt/live/esantini.com/fullchain.pem; # managed by Certbot
     ssl_certificate_key /etc/letsencrypt/live/esantini.com/privkey.pem; # managed by Certbot

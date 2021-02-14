@@ -18,7 +18,7 @@ if (IS_PROD) {
 // LED message in sense-hat:
 let message = 'Hello World!';
 // cannot getMessage() before database is initialized so set message in dbInit(cb)
-dbInit(() => message = getMessage());
+dbInit(() => (message = getMessage()));
 
 // disable sense-HAT in 'config.json'
 if (config.senseHatEnabled) {
@@ -48,11 +48,26 @@ if (config.senseHatEnabled) {
     }
   }
 } else {
-  app.get('/api/weather', (req, res) => res.json({ msg: "Sense-HAT not Available" }));
+  app.get('/api/weather', (req, res) =>
+    res.json({ msg: 'Sense-HAT not Available' })
+  );
 }
 
 app.listen(app.get('port'), () => {
   console.log(`Find the server at: http://localhost:${app.get('port')}/`); // eslint-disable-line no-console
+});
+
+app.post('/api/wedding-message', (req, res) => {
+  console.log(req.body);
+  if (req.body?.message) {
+    console.log(new Date(), req.body.message);
+    // addMessage({
+    //   message,
+    //   ip: req.headers['x-forwarded-for'],
+    // });
+    if (config.smsEnabled) sendSMS(message);
+  }
+  res.sendStatus(200);
 });
 
 app.get('/api/message', (req, res) => res.json({ message }));
@@ -62,7 +77,7 @@ app.post('/api/message', (req, res) => {
     console.log(new Date(), ` setting message ${message}`);
     addMessage({
       message,
-      ip: req.headers['x-forwarded-for']
+      ip: req.headers['x-forwarded-for'],
     });
     if (config.smsEnabled) sendSMS(message);
   }
