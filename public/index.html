@@ -10,19 +10,19 @@
       content="Web site created using create-react-app, hosted in my home on a Raspberry Pi."
     />
     <!--
-      manifest.json provides metadata used when your web app is installed on a
-      user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
-    -->
+  manifest.json provides metadata used when your web app is installed on a
+  user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
+-->
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
     <!--
-      Notice the use of %PUBLIC_URL% in the tags above.
-      It will be replaced with the URL of the `public` folder during the build.
-      Only files inside the `public` folder can be referenced from the HTML.
+  Notice the use of %PUBLIC_URL% in the tags above.
+  It will be replaced with the URL of the `public` folder during the build.
+  Only files inside the `public` folder can be referenced from the HTML.
 
-      Unlike "/favicon.ico" or "favicon.ico", "%PUBLIC_URL%/favicon.ico" will
-      work correctly both with client-side routing and a non-root public URL.
-      Learn how to configure a non-root public URL by running `npm run build`.
-    -->
+  Unlike "/favicon.ico" or "favicon.ico", "%PUBLIC_URL%/favicon.ico" will
+  work correctly both with client-side routing and a non-root public URL.
+  Learn how to configure a non-root public URL by running `npm run build`.
+-->
     <title>eSantini Web Development</title>
   </head>
   <body>
@@ -41,14 +41,18 @@
     <script>
       let kkeys = [];
       const audio = new Audio('%PUBLIC_URL%/Toasty.mp3'),
-        konami = "38,38,40,40,37,39,37,39,66,65";
+        konami = '38,38,40,40,37,39,37,39,66,65';
 
       document.addEventListener('keydown', function (e) {
         kkeys.push(e.keyCode);
         if (kkeys.toString().indexOf(konami) >= 0) {
           audio.play();
-          setTimeout(function () {document.getElementById("toasty").classList.add("show");}, 300);
-          setTimeout(function () {document.getElementById("toasty").classList.remove("show");}, 1000);
+          setTimeout(function () {
+            document.getElementById('toasty').classList.add('show');
+          }, 300);
+          setTimeout(function () {
+            document.getElementById('toasty').classList.remove('show');
+          }, 1000);
           kkeys = [];
         }
       });
