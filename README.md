@@ -22,7 +22,7 @@ At this point you can just run `serve -s build` but it won't restart when bootin
 
 # Setup PM2
 
-With PM2 you can keep serving both Front-End and API after device restarts
+With PM2 you can keep the API running after device restarts
 
 Install PM2 with `sudo yarn global add pm2`
 
@@ -30,15 +30,9 @@ Install PM2 with `sudo yarn global add pm2`
 
 Run `pm2 startup` and follow the instruction.
 
-### Serve Build Files & Run API
+### Run API
 
 From the project's main folder run the following commands:
-
-Serve static files in `/build` folder:
-
-```bash
-pm2 serve -s build --name "e-santini"
-```
 
 Run the NodeJS API server:
 
