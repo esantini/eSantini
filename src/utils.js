@@ -28,6 +28,19 @@ export const getCurrentMessage = (cb) => {
     .then(cb);
 };
 
+export const selfUpdate = (key, cb) => {
+  return fetch('api/self-update', {
+    method: 'POST',
+    body: JSON.stringify({ key }),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  })
+    .then(checkStatus)
+    .then(cb)
+    .catch(cb);
+};
+
 function checkStatus(response) {
   if (response.status >= 200 && response.status < 300) {
     return response;

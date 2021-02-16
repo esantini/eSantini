@@ -1,6 +1,7 @@
 require('./init.js'); // Sets global.config from api/config.json && privateConfig.json
 const express = require('express');
 const { addMessage, getMessage, init: dbInit } = require('./database');
+const { update } = require('./apiUtils');
 let sendSMS;
 if (config.smsEnabled) sendSMS = require('./sendSms');
 
@@ -68,6 +69,12 @@ app.post('/api/wedding-message', (req, res) => {
     if (config.smsEnabled) sendSMS(message);
   }
   res.sendStatus(200);
+});
+
+app.post('/api/self-update', (req, res) => {
+  update(req.body?.key, (err) =>
+    err ? res.sendStatus(401) : res.sendStatus(200)
+  );
 });
 
 app.get('/api/message', (req, res) => res.json({ message }));

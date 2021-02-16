@@ -59,6 +59,13 @@ server {
         error_page 403 = @405; # Convert deny response from 403 (Forbidden) to 405 (Method Not Allowed)
         proxy_pass http://localhost:3001/api/message;
     }
+    location /api/self-update {
+        limit_except POST {
+            deny all; 
+        }
+        error_page 403 = @405; # Convert deny response from 403 (Forbidden) to 405 (Method Not Allowed)
+        proxy_pass http://localhost:3001/api/self-update;
+    }
 
     ssl_certificate /etc/letsencrypt/live/esantini.com/fullchain.pem; # managed by Certbot
     ssl_certificate_key /etc/letsencrypt/live/esantini.com/privkey.pem; # managed by Certbot
