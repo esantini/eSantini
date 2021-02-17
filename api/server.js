@@ -74,9 +74,13 @@ app.post('/api/wedding-message', (req, res) => {
 app.post('/api/self-update', (req, res) => {
   console.log(req.headers);
   let error = validateJsonWebhook(req) ? null : 'Invalid Request';
+  if (error) {
+    console.warn(error);
+    return res.sendStatus(401);
+  } else res.sendStatus(200);
+
   update((err) => (error = err));
   if (error) console.warn(error);
-  error ? res.sendStatus(401) : res.sendStatus(200);
 });
 
 app.get('/api/message', (req, res) => res.json({ message }));
