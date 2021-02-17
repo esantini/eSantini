@@ -5,7 +5,7 @@ const err = 'Error: Git pull failed';
 
 const deployCommands = ['git pull', 'yarn', 'yarn build', 'pm2 restart server'];
 
-const update = (key, cb) => {
+const update = (cb) => {
   for (const command of deployCommands) {
     const { code } = shell.exec(command);
     if (code !== 0) {

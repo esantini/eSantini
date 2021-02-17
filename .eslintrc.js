@@ -4,7 +4,10 @@ module.exports = {
     browser: true,
     es2021: true,
   },
-  extends: ['plugin:prettier/recommended', 'plugin:react/recommended'],
+  extends: [
+    // 'plugin:prettier/recommended',
+    'plugin:react/recommended',
+  ],
   parserOptions: {
     ecmaFeatures: {
       jsx: true,
@@ -12,11 +15,14 @@ module.exports = {
     ecmaVersion: 12,
     sourceType: 'module',
   },
-  plugins: ['react', 'prettier'],
+  plugins: [
+    'react',
+    // 'prettier'
+  ],
   rules: {
     'react/prop-types': 'warn',
     'react/react-in-jsx-scope': 0,
-    'prettier/prettier': 'warn',
+    // 'prettier/prettier': 'warn',
     quotes: ['warn', 'single'],
   },
 };
