@@ -18,7 +18,7 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 Run `yarn build` to create the `/build` folder.
 
-At this point you can just run `serve -s build` but it won't restart when booting.
+If NGINX & port forward is configured correctly this should start serving the static files on the site.
 
 # Setup PM2
 
