@@ -1,3 +1,3 @@
 {
-  "eslint.workingDirectories": ["./build"]
+  "eslint.workingDirectories": ["/home/pi/repos/eSantini/build"]
 }
