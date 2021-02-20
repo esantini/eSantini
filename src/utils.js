@@ -4,7 +4,8 @@ export const getWeather = (cb) => {
   })
     .then(checkStatus)
     .then(parseJSON)
-    .then(cb);
+    .then(cb)
+    .catch(error => console.error(error));
 };
 
 export const setMessage = (message, cb) => {
@@ -16,7 +17,8 @@ export const setMessage = (message, cb) => {
     },
   })
     .then(checkStatus)
-    .then(cb);
+    .then(cb)
+    .catch(error => console.error(error));
 };
 
 export const getCurrentMessage = (cb) => {
@@ -25,20 +27,8 @@ export const getCurrentMessage = (cb) => {
   })
     .then(checkStatus)
     .then(parseJSON)
-    .then(cb);
-};
-
-export const selfUpdate = (key, cb) => {
-  return fetch('api/self-update', {
-    method: 'POST',
-    body: JSON.stringify({ key }),
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  })
-    .then(checkStatus)
     .then(cb)
-    .catch(cb);
+    .catch(error => console.error(error));
 };
 
 function checkStatus(response) {
