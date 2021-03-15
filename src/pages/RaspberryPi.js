@@ -128,11 +128,11 @@ const RaspberryPi = () => {
             <h3>Sensors Data:</h3>
             <P>
               Temperature:
-              <B> {roundNumber(sensorData.temperature, 1) || '--'}°F </B>|
+              <B> {roundNumber(sensorData.temperature + 10, 1) || '--'}°F </B>|
               <B>
                 {' '}
                 {roundNumber(
-                  ((parseFloat(sensorData.temperature, 10) - 32) * 5) / 9,
+                  ((parseFloat(sensorData.temperature + 10, 10) - 32) * 5) / 9,
                   1
                 ) || '--'}
                 °C
