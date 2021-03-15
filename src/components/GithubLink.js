@@ -21,7 +21,13 @@ const GithubLink = ({ compact = false }) => (
     target="_blank"
     rel="noopener noreferrer"
   >
-    {!compact && <img src={octocat} alt="octocat" id="octocat" />}
+    {!compact && (
+      <img
+        src="https://github.githubassets.com/images/modules/logos_page/Octocat.png"
+        alt="octocat"
+        id="octocat"
+      />
+    )}
     <img src={githubLogo} alt="github logo" />
   </A>
 );
