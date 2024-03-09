@@ -1,24 +1,36 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import PropTypes from 'prop-types';
 
 import GoogleLoginButton from 'pages/auth/GoogleLoginButton';
-import { logOut } from 'utils';
+import { logOut, useClickOutside } from 'utils';
 import styled from '@emotion/styled';
 
 const UserHeader = ({ user, setUser }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const wrapperRef = useRef(null);
+  useClickOutside(wrapperRef, () => setIsOpen(false));
   return (
-    <TopRightDiv isOpen={isOpen} onClick={() => setIsOpen(v => !v)}>
+    <TopRightDiv isOpen={isOpen} onClick={() => setIsOpen(true)} ref={wrapperRef}>
       {user?.name ?
         <>
           <div className='userHeader'>
-            <img alt="User Profile Image" src={user.picture} />
+            <img alt='User Profile Image' src={user.picture} />
             {user.name}
           </div>
           {isOpen &&
             <>
               <hr />
-              <button style={{ cursor: 'pointer' }} onClick={() => logOut(setUser)}>Log out</button>
+              <button
+                style={{ cursor: 'pointer' }}
+                onClick={(e) => {
+                  // Prevent propagation for the parent onClick which opens the menu
+                  e.stopPropagation();
+                  logOut(setUser);
+                  setIsOpen(false);
+                }}
+              >
+                Log out
+              </button>
             </>
           }
         </>
@@ -28,7 +40,12 @@ const UserHeader = ({ user, setUser }) => {
           {isOpen &&
             <>
               <hr />
-              <GoogleLoginButton setUser={(user) => { setUser(user); setIsOpen(false); }} />
+              <GoogleLoginButton
+                setUser={(user) => {
+                  setUser(user);
+                  setIsOpen(false);
+                }}
+              />
             </>
           }
         </>
@@ -50,18 +67,24 @@ const TopRightDiv = styled.div`
   padding: .5em 1em;
   font-weight: bold;
   border-bottom-left-radius: 1em;
+  overflow: hidden;
+  max-width: 290px;
 
-  transition: background-color 0.35s ease, box-shadow 0.35s ease, heigth 0.35s ease;
+  transition:
+    background-color 0.35s ease,
+    box-shadow 0.35s ease;
 
   ${({ isOpen }) => isOpen ? `
     background-color: #008741;
     box-shadow: -2px 3px 6px #7f7f7f;
+    padding-bottom: .8em;
   ` : ''}
 
   .userHeader {
     display: flex;
     align-items: center;
     gap: .5em;
+    cursor: default;
   }
   
   button {

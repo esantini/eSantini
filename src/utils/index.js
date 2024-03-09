@@ -1,14 +1,16 @@
-import { logOut } from './authUtils';
 import fetchUser from './fetchUser';
+import useClickOutside from './useClickOutside';
+import { logOut } from './authUtils';
 import { setLight, getLight } from './lightControls';
 import { getWeather, setMessage, getCurrentMessage } from './miscApiCalls';
 
 export {
   logOut,
-  fetchUser,
   setLight,
   getLight,
+  fetchUser,
   getWeather,
   setMessage,
+  useClickOutside,
   getCurrentMessage,
 };
