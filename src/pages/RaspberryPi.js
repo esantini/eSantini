@@ -1,18 +1,27 @@
 import { useState, useEffect } from 'react';
 import styled from '@emotion/styled';
 
-import { getWeather } from '../utils';
-import { B, GithubLink, H1, Hr, InputMessage, P, Section } from '../components';
+import { B, GithubLink, H1, Hr, InputMessage, P, Section } from 'components';
+import { getLight, setLight } from 'utils';
+import rasPiImg from 'images/raspberry-pi-4-labelled.png'
 
 const roundNumber = (value, decimals = 0) =>
   Math.round(parseFloat(value, 10) * 10 ** decimals) / 10 ** decimals;
 
 const RaspberryPi = () => {
-  const [sensorData, setSensorData] = useState({});
+  // const [sensorData, setSensorData] = useState({});
+  const sensorData = {};
+  const [currentLight, setCurrentLight] = useState(false);
+
+  const setLightClick = () => {
+    setCurrentLight(!currentLight);
+    setLight(!currentLight);
+  }
 
   useEffect(() => {
+    getLight(({ light }) => setCurrentLight(light));
     document.title = 'Raspberry Pi - eSantini';
-    getWeather(setSensorData);
+    // getWeather(setSensorData);
   }, []);
 
   return (
@@ -27,10 +36,7 @@ const RaspberryPi = () => {
           target="_blank"
           rel="noopener noreferrer"
         >
-          <img
-            src="https://assets.raspberrypi.com/static/raspberry-pi-4-labelled-e7f2e1d0bd4acdae2368c7ebd7b2028f.png"
-            alt="Raspberry Pi 4 Specifications"
-          />
+          <img src={rasPiImg} alt="Raspberry Pi 4 Specifications" />
         </RaspImgLink>
         <P_NoWrap>
           Checkout the code in
@@ -41,19 +47,21 @@ const RaspberryPi = () => {
       </Section>
 
       <Section>
-        <h2>Sense HAT</h2>
-
-        <P>
-          The Raspberry PI is currently wearing a Sense HAT. A device with
-          sensors and a 8x8 pixel display
-        </P>
-        <Hr />
         <Div_Sensors>
           <div>
             <h3>Send me a message:</h3>
             <InputMessage />
           </div>
           <div>
+            <h3>Light switch:</h3>
+            {currentLight ? 'Light is on' : 'Light is off'}
+            <br />
+            <ToggleButtonWrapper isOn={currentLight} onClick={setLightClick} >
+              <button />
+            </ToggleButtonWrapper>
+          </div>
+          {/* this div is hidden because sensors aren't setup at the moment */}
+          <div style={{ display: 'none' }}>
             <h3>Sensors Data:</h3>
             <P>
               Temperature:
@@ -87,6 +95,30 @@ export default RaspberryPi;
 
 const Header = styled.header`
   margin-top: 20px;
+`;
+
+const ToggleButtonWrapper = styled.div`
+  position: relative;
+  margin: auto;
+  width: 2.4em;
+  height: 1.2em;
+  background-color: ${({ isOn }) => isOn ? '#3b973b' : '#ccc'};
+  border-radius: 1.5em;
+  cursor: pointer;
+
+  /* Toggle button */
+  button {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 50%;
+    height: 100%;
+    background-color: #fff;
+    border-radius: 1.5em;
+    transition: 0.3s;
+    cursor: pointer;
+    ${({ isOn }) => isOn ? 'left: 50%' : ''}
+  }
 `;
 
 const RaspImgLink = styled.a`

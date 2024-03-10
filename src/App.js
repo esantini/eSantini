@@ -3,11 +3,11 @@ import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 
 import Nav from 'components/Nav';
-import UserHeader from 'components/UserHeader';
+import TopMenu from 'components/TopMenu';
 import Home from 'pages/Home';
 import Login from 'pages/auth/Login';
 import RaspberryPi from 'pages/RaspberryPi';
-import Sandbox from 'pages/Sandbox';
+import CameraStream from 'pages/CameraStream';
 
 import { fetchUser } from 'utils';
 
@@ -26,18 +26,18 @@ function App() {
     <GoogleOAuthProvider clientId={CLIENT_ID}>
       <Router>
         <main>
-          <UserHeader user={user} setUser={setUser} />
+          <TopMenu user={user} setUser={setUser} />
           <Switch>
             <Route exact path="/">
-              <Home />
+              <Home user={user} />
             </Route>
             <Route path="/raspberrypi">
               <Nav />
               <RaspberryPi />
             </Route>
-            <Route path="/sandbox">
+            <Route path="/camera">
               <Nav />
-              <Sandbox />
+              <CameraStream user={user} />
             </Route>
             <Route path="/login">
               <Nav />

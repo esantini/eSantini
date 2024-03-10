@@ -1,25 +1,52 @@
 import { useState, useRef } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 import GoogleLoginButton from 'pages/auth/GoogleLoginButton';
 import { logOut, useClickOutside } from 'utils';
 import styled from '@emotion/styled';
 
-const UserHeader = ({ user, setUser }) => {
+const LINKS = [
+  { path: '/', text: 'Home' },
+  { path: '/raspberrypi', text: 'Raspberry Pi' },
+  { path: '/camera', text: 'Camera Stream' }
+];
+
+const renderLinks = (p) => (<>
+  <hr />
+  <LinksWrapper>
+    {LINKS.map(({ path, text }) => (
+      <Link key={path} to={path} className={p === path ? 'disabled' : ''} >
+        {text}
+      </Link>
+    ))}
+  </LinksWrapper>
+  <hr />
+</>);
+
+const TopMenu = ({ user, setUser }) => {
   const [isOpen, setIsOpen] = useState(false);
   const wrapperRef = useRef(null);
   useClickOutside(wrapperRef, () => setIsOpen(false));
+
+  const location = useLocation();
+  const { pathname } = location;
+
+  const toggleMenu = e => {
+    e.stopPropagation();
+    setIsOpen(v => !v);
+  };
   return (
     <TopRightDiv isOpen={isOpen} onClick={() => setIsOpen(true)} ref={wrapperRef}>
       {user?.name ?
         <>
-          <div className='userHeader'>
+          <div className='userMenu' onClick={toggleMenu}>
             <img alt='User Profile Image' src={user.picture} />
             {user.name}
           </div>
           {isOpen &&
             <>
-              <hr />
+              {renderLinks(pathname)}
               <button
                 style={{ cursor: 'pointer' }}
                 onClick={(e) => {
@@ -36,16 +63,20 @@ const UserHeader = ({ user, setUser }) => {
         </>
         :
         <>
-          <button>Log In</button>
+          <button onClick={toggleMenu}>Menu</button>
           {isOpen &&
             <>
-              <hr />
-              <GoogleLoginButton
-                setUser={(user) => {
-                  setUser(user);
-                  setIsOpen(false);
-                }}
-              />
+              {renderLinks(pathname)}
+              Log In
+              <Br />
+              <div className="loginWrapper">
+                <GoogleLoginButton
+                  setUser={(user) => {
+                    setUser(user);
+                    setIsOpen(false);
+                  }}
+                />
+              </div>
             </>
           }
         </>
@@ -53,12 +84,12 @@ const UserHeader = ({ user, setUser }) => {
     </TopRightDiv>
   );
 }
-UserHeader.propTypes = {
+TopMenu.propTypes = {
   user: PropTypes.object,
   setUser: PropTypes.func,
 };
 
-export default UserHeader;
+export default TopMenu;
 
 const TopRightDiv = styled.div`
   position: absolute;
@@ -68,7 +99,6 @@ const TopRightDiv = styled.div`
   font-weight: bold;
   border-bottom-left-radius: 1em;
   overflow: hidden;
-  max-width: 290px;
 
   transition:
     background-color 0.35s ease,
@@ -80,14 +110,14 @@ const TopRightDiv = styled.div`
     padding-bottom: .8em;
   ` : ''}
 
-  .userHeader {
+  .userMenu {
     display: flex;
     align-items: center;
     gap: .5em;
     cursor: default;
   }
   
-  button {
+  button, a {
     color: #b2fdd6;
     background: none;
     border: none;
@@ -102,4 +132,24 @@ const TopRightDiv = styled.div`
     background-color: #008741${({ isOpen }) => isOpen ? '' : '88'};
     box-shadow: -2px 3px 6px #7f7f7f;
   }
+  .loginWrapper {
+    display: flex;
+    justify-content: center;
+  }
+  a.disabled {
+    color: #ddd;
+    pointer-events: none;
+    text-decoration: none;
+  }
+`;
+
+const LinksWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+const Br = styled.br`
+  margin-bottom: .5em;
+  display: block;
+  content: '';
 `;

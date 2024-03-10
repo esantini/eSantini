@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 
 import { getCurrentMessage, setMessage } from '../utils';
-import { B, P, Psmall } from '../components';
+import { B, P } from '../components';
 
 const InputMessage = () => {
   const [currentMessage, setCurrentMessage] = useState('');
@@ -38,10 +38,10 @@ const InputMessage = () => {
       </div>
       <P>Current message:</P>
       <B>{currentMessage}</B>
-      <Psmall>
+      {/* <Psmall>
         This message is repeatedly displayed on the Raspberry Pi&apos;s Sense
         HAT
-      </Psmall>
+      </Psmall> */}
     </>
   );
 };
