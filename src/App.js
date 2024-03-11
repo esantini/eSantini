@@ -4,6 +4,7 @@ import { GoogleOAuthProvider } from '@react-oauth/google';
 
 import Nav from 'components/Nav';
 import TopMenu from 'components/TopMenu';
+import Chat from 'components/Chat';
 import Home from 'pages/Home';
 import Login from 'pages/auth/Login';
 import RaspberryPi from 'pages/RaspberryPi';
@@ -14,9 +15,12 @@ import { fetchUser } from 'utils';
 import toasty from 'images/spiderToasty.png';
 
 const CLIENT_ID = '482181895955-i27hea4kgp5s8u67gvsgl56k7t1l966s.apps.googleusercontent.com';
+const WEB_SOCKET_URL = 'esantini.com';
+const CHAT_ENABLED = false;
 
 function App() {
   const [user, setUser] = useState({});
+  const [ws] = CHAT_ENABLED ? useState(new WebSocket(`wss://${WEB_SOCKET_URL}:8080`)) : [];
 
   useEffect(() => {
     fetchUser().then(setUser);
@@ -49,6 +53,9 @@ function App() {
           <img alt="Konami Code" src={toasty} />
         </div>
       </Router>
+      {CHAT_ENABLED &&
+        <Chat user={user} ws={ws} />
+      }
     </GoogleOAuthProvider>
   );
 }

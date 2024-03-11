@@ -92,7 +92,7 @@ TopMenu.propTypes = {
 export default TopMenu;
 
 const TopRightDiv = styled.div`
-  position: absolute;
+  position: fixed;
   top: 0;
   right: 0;
   padding: .5em 1em;
