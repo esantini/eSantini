@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
@@ -31,6 +31,9 @@ const TopMenu = ({ user, setUser }) => {
 
   const location = useLocation();
   const { pathname } = location;
+  useEffect(() => {
+    setIsOpen(false);
+  }, [location]);
 
   const toggleMenu = e => {
     e.stopPropagation();

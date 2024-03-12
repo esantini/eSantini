@@ -20,7 +20,7 @@ const CHAT_ENABLED = false;
 
 function App() {
   const [user, setUser] = useState({});
-  const [ws] = CHAT_ENABLED ? useState(new WebSocket(`wss://${WEB_SOCKET_URL}:8080`)) : [];
+  const [ws] = useState(CHAT_ENABLED ? new WebSocket(`wss://${WEB_SOCKET_URL}:8080`) : {});
 
   useEffect(() => {
     fetchUser().then(setUser);

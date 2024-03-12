@@ -8,7 +8,7 @@ const CameraStream = ({ user }) => (
 
     <PlayerWrapper>
       {user?.isWhitelisted ?
-        <img src="/api/stream.mp4" />
+        <img src="/stream" />
         :
         <>
           <p>
