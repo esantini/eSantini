@@ -66,7 +66,7 @@ const TopMenu = ({ user, setUser }) => {
         </>
         :
         <>
-          <button onClick={toggleMenu}>Menu</button>
+          <button onClick={toggleMenu} style={{ cursor: 'pointer' }}>Menu</button>
           {isOpen &&
             <>
               {renderLinks(pathname)}
@@ -98,17 +98,20 @@ const TopRightDiv = styled.div`
   position: fixed;
   top: 0;
   right: 0;
+  z-index: 9;
+  overflow: hidden;
   padding: .5em 1em;
   font-weight: bold;
+  color: var(--font-color-2);
   border-bottom-left-radius: 1em;
-  overflow: hidden;
+  background-color: var(--menu-background-closed);
 
   transition:
     background-color 0.35s ease,
     box-shadow 0.35s ease;
 
   ${({ isOpen }) => isOpen ? `
-    background-color: #008741;
+    background-color: var(--menu-background);
     box-shadow: -2px 3px 6px #7f7f7f;
     padding-bottom: .8em;
   ` : ''}
@@ -121,7 +124,7 @@ const TopRightDiv = styled.div`
   }
   
   button, a {
-    color: #b2fdd6;
+    color: var(--font-color-2);
     background: none;
     border: none;
     font-weight: bold;
@@ -132,7 +135,9 @@ const TopRightDiv = styled.div`
     height: 2em;
   }
   &:hover {
-    background-color: #008741${({ isOpen }) => isOpen ? '' : '88'};
+    ${({ isOpen }) => isOpen ? '' : `
+      background-color: var(--menu-background-hover);
+    `}
     box-shadow: -2px 3px 6px #7f7f7f;
   }
   .loginWrapper {
@@ -140,7 +145,7 @@ const TopRightDiv = styled.div`
     justify-content: center;
   }
   a.disabled {
-    color: #ddd;
+    color: var(--menu-disabled);
     pointer-events: none;
     text-decoration: none;
   }
@@ -149,6 +154,7 @@ const TopRightDiv = styled.div`
 const LinksWrapper = styled.div`
   display: flex;
   flex-direction: column;
+  margin-bottom: .5em;
 `;
 
 const Br = styled.br`

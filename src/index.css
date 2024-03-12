@@ -1,35 +1,225 @@
-body {
+:root {
+  --max-width: 1100px;
+  --border-radius: 12px;
+  --font-mono: ui-monospace, Menlo, Monaco, "Cascadia Mono", "Segoe UI Mono",
+    "Roboto Mono", "Oxygen Mono", "Ubuntu Monospace", "Source Code Pro",
+    "Fira Mono", "Droid Sans Mono", "Courier New", monospace;
+
+  --font-color: #486547; /* Font Color */
+  --font-color-2: #233522; /* Font Color */
+  --background-start: #ffffff;
+  --background-end: #e3e7db;
+  --menu-background: #d0d8bf;
+  --menu-background-closed: #e3e7db;
+  --menu-background-hover: #d0d8bf;
+  --menu-disabled: #6f6f6f;
+
+  --h1-color: #588157;
+  --h2-color: #7da87c;
+  --h3-color: #7f8d66;
+
+  --a-color: #344E41;
+  --highlight-color: #5a8871;
+  --light-highlight-color: #3A5A40;
+
+  --read-more-color: #A3B18A;
+  --read-more-hover-color: #588157;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --foreground-rgb: 255, 255, 255;
+    --background-start-rgb: 0, 0, 0;
+    --background-end-rgb: 0, 0, 0;
+  }
+}
+
+* {
+  box-sizing: border-box;
+  padding: 0;
   margin: 0;
+}
+
+html,
+body {
+  max-width: 100vw;
+  overflow-x: hidden;
+}
+
+body {
+  color: var(--font-color);
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  padding: 6rem 8rem;
+  background: linear-gradient(
+      to bottom,
+      transparent,
+      var(--background-end)
+    )
+    var(--background-start);
+}
+
+/* Smaller devices (tablets, 768px and down) */
+@media (max-width: 768px) {
+  body {
+    padding: 4rem;
+  }
+}
+
+/* Extra small devices (phones, 600px and down) */
+@media (max-width: 600px) {
+  body {
+    padding: 2rem;
+  }
+  
+  .project .columnWrapper {
+    display: block;
+  }
+  .column {
+    margin-bottom: 1rem;
+  }
+}
+
+/* Large devices (desktops, 1024px and up) */
+@media (min-width: 1024px) {
+  body {
+    padding-left: 12rem;
+    padding-right: 12rem;
+    font-size: 1.2em;
+  }
+}
+
+/* Large devices (desktops, 1224px and up) */
+@media (min-width: 1224px) {
+  body {
+    padding-left: 17rem;
+    padding-right: 17rem;
+    font-size: 1.5em;
+  }
+}
+/* Large devices (desktops, 1500px and up) */
+@media (min-width: 1500px) {
+  body {
+    font-size: 1.7em;
+  }
 }
 
 main {
-  align-items: center;
-  background-color: #001818;
-  color: #ddd;
   display: flex;
   flex-direction: column;
-  font-size: calc(10px + 2vmin);
-  justify-content: center;
   min-height: 100vh;
+  align-items: center;
+}
+
+h1 {
+  color: var(--h1-color);
+  font-size: 1.3em;
+}
+h2 {
+  color: var(--h2-color);
+  font-size: 1.17em;
+  margin-top: .5em;
+  margin-bottom: .5em;
+}
+h3 {
+  color: var(--h3-color);
+  font-size: 1em;
+  margin-bottom: .2em;
+}
+
+.highlight {
+  color: var(--highlight-color);
+  font-weight: bold;
+}
+
+.latestProjectsTitle {
+  margin-top: 2rem;
+}
+
+.readMoreSection {
+  position: relative;
+  transition: max-height 1s ease;
+  overflow: hidden;
+  margin-top: 1rem;
+  margin-bottom: 2rem;
+  mask-image: linear-gradient(to bottom, black 30%, transparent 100%);
+}
+.readMoreSection.display {
+  mask-image: none;
+}
+.readMoreBtn {
+  border: none;
+  background: none;
+  height: 2rem;
+  font-size: 1em;
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-bottom: 2rem;
+  color: var(--read-more-color);
+  cursor: pointer;
+  text-shadow: 1px 1px 1px #424242;
+}
+
+.readMoreBtn:hover {
+  color: var(--read-more-hover-color);
+}
+.readMoreBtn::before, .readMoreBtn::after {
+  content: '';
+  position: absolute;
+  right: 2.2em;
+  border: solid var(--read-more-hover-color);
+  border-width: 0 0.1em 0.1em 0;
+  display: inline-block;
+  padding: 5px;
+  transform: translateY(200%) rotate(45deg);
+  top: 0.3em;
+}
+.readMoreBtn::after {
+  top: 0;
+}
+.display .readMoreBtn::before, .display .readMoreBtn::after {
+  transform: translateY(200%) rotate(-135deg);
+  top: 0.4em;
+}
+.display .readMoreBtn::after {
+  top: 0.7em;
+}
+
+.rafinBassLink {
+  position: relative;
+  max-width: 400px;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-top: 1em;
   text-align: center;
 }
-
-h1,
-h2,
-h3 {
-  color: beige;
-  font-family: monospace;
+.rafinBassLink p {
+  margin-bottom: .7em;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+.project {
+  text-align: justify;
 }
+
+.raspiContainer {
+  position: relative;
+  display: flex;
+  gap: 1rem;
+  padding-bottom: 1rem;
+}
+
+@media (max-width: 768px) {
+  .raspiContainer {
+    flex-direction: column;
+  }
+  .raspiText {
+    width: 100%;
+  }
+}
+
+
 
 /* Animation on "Konami Code" image */
 #toasty {

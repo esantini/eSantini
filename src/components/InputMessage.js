@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
-
 import { getCurrentMessage, setMessage } from '../utils';
-import { B, P } from '../components';
+import styled from '@emotion/styled';
 
 const InputMessage = () => {
   const [currentMessage, setCurrentMessage] = useState('');
@@ -29,15 +28,15 @@ const InputMessage = () => {
 
   return (
     <>
-      <div>
+      <InputWrapper>
         <input value={inputValue} onChange={onInputChange} />
         <button onClick={submitMessage} disabled={submitting}>
           Submit
         </button>
-        {submitting && <div>Submitting</div>}
-      </div>
-      <P>Current message:</P>
-      <B>{currentMessage}</B>
+      </InputWrapper>
+      {submitting && <div>Submitting</div>}
+      <p>Current message:</p>
+      <b>{currentMessage}</b>
       {/* <Psmall>
         This message is repeatedly displayed on the Raspberry Pi&apos;s Sense
         HAT
@@ -47,3 +46,12 @@ const InputMessage = () => {
 };
 
 export default InputMessage;
+
+const InputWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  input {
+    width: 8em;
+    margin-right: 0.5em;
+  }
+`;

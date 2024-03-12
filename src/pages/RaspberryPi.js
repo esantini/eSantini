@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import styled from '@emotion/styled';
 
-import { B, GithubLink, H1, Hr, InputMessage, P, Section } from 'components';
+import { GithubLink, InputMessage } from 'components';
 import { getLight, setLight } from 'utils';
 import rasPiImg from 'images/raspberry-pi-4-labelled.png'
 
@@ -27,64 +27,58 @@ const RaspberryPi = () => {
   return (
     <>
       <Header>
-        <H1>Raspberry Pi</H1>
+        <h1>Raspberry Pi</h1>
       </Header>
-      <Section>
-        <P_NoWrap>This Website is Hosted on a Raspberry Pi 4</P_NoWrap>
-        <RaspImgLink
-          href="https://www.raspberrypi.org/products/raspberry-pi-4-model-b/"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <img src={rasPiImg} alt="Raspberry Pi 4 Specifications" />
-        </RaspImgLink>
-        <P_NoWrap>
+      <RpiInfo>
+        <p>This Website is Hosted on a Raspberry Pi 4</p>
+        <RaspImg src={rasPiImg} alt="Raspberry Pi 4 Specifications" />
+        <p>
           Checkout the code in
           <Span>
             <GithubLink compact={true} />
           </Span>
-        </P_NoWrap>
-      </Section>
+        </p>
+      </RpiInfo>
 
-      <Section>
-        <Div_Sensors>
-          <div>
-            <h3>Send me a message:</h3>
-            <InputMessage />
-          </div>
-          <div>
-            <h3>Light switch:</h3>
-            {currentLight ? 'Light is on' : 'Light is off'}
-            <br />
-            <ToggleButtonWrapper isOn={currentLight} onClick={setLightClick} >
-              <button />
-            </ToggleButtonWrapper>
-          </div>
-          {/* this div is hidden because sensors aren't setup at the moment */}
-          <div style={{ display: 'none' }}>
-            <h3>Sensors Data:</h3>
-            <P>
-              Temperature:
-              <B> {roundNumber(sensorData.temperature + 10, 1) || '--'}°F </B>|
-              <B>
-                {' '}
-                {roundNumber(
-                  ((parseFloat(sensorData.temperature + 10, 10) - 32) * 5) / 9,
-                  1
-                ) || '--'}
-                °C
-              </B>
-            </P>
-            <P>
-              Humidity: <B>{roundNumber(sensorData.humidity) || '--'} %</B>
-            </P>
-            <P>
-              Pressure:{' '}
-              <B>{roundNumber(sensorData.pressure) || '--'} millibars</B>
-            </P>
-          </div>
-        </Div_Sensors>
-      </Section>
+      <Hr />
+      <RpiControls>
+        <div>
+          <h3>Send me a message:</h3>
+          <InputMessage />
+        </div>
+        <hr />
+        <div>
+          <h3>Light switch:</h3>
+          Light is {currentLight ? 'on' : 'off'}
+          <br />
+          <ToggleButtonWrapper isOn={currentLight} onClick={setLightClick} >
+            <button />
+          </ToggleButtonWrapper>
+        </div>
+        {/* this div is hidden because sensors aren't setup at the moment */}
+        <div style={{ display: 'none' }}>
+          <h3>Sensors Data:</h3>
+          <p>
+            Temperature:
+            <b> {roundNumber(sensorData.temperature + 10, 1) || '--'}°F </b>|
+            <b>
+              {' '}
+              {roundNumber(
+                ((parseFloat(sensorData.temperature + 10, 10) - 32) * 5) / 9,
+                1
+              ) || '--'}
+              °C
+            </b>
+          </p>
+          <p>
+            Humidity: <b>{roundNumber(sensorData.humidity) || '--'} %</b>
+          </p>
+          <p>
+            Pressure:{' '}
+            <b>{roundNumber(sensorData.pressure) || '--'} millibars</b>
+          </p>
+        </div>
+      </RpiControls>
 
       <br />
     </>
@@ -95,6 +89,47 @@ export default RaspberryPi;
 
 const Header = styled.header`
   margin-top: 20px;
+`;
+
+const Hr = styled.hr`
+  width: 70%;
+  margin-bottom: 1em;
+`;
+
+const RpiInfo = styled.section`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  p {
+    max-width: 100vw;
+    text-align: center;
+    margin: 1em;
+  }
+`;
+
+const RpiControls = styled.section`
+  display: flex;
+  width: 100%;
+  justify-content: space-evenly;
+  > div {
+    width: 40%;
+    text-align: center;
+  }
+  hr {
+    display: none;
+  }
+  @media (max-width: 400px) {
+    flex-direction: column;
+    align-items: center;
+    hr {
+      display: block;
+      width: 60%;
+      margin: 1em 0;
+    }
+    > div {
+      width: 80%;
+    }
+  }
 `;
 
 const ToggleButtonWrapper = styled.div`
@@ -121,49 +156,18 @@ const ToggleButtonWrapper = styled.div`
   }
 `;
 
-const RaspImgLink = styled.a`
+const RaspImg = styled.img`
   padding: 20px;
-  img {
-    width: 80vmin;
-    max-width: 40vw;
-    filter: drop-shadow(0px 5px 15px #3bb);
-  }
-  @media (max-width: 1000px) {
-    img {
-      max-width: 50vw;
-    }
-  }
-`;
-
-const Div_Sensors = styled.div`
-  @media (min-width: 600px) {
-    display: flex;
-    > div {
-      width: 50%;
-      max-width: 50%;
-      h3 {
-        margin: 5px 0px;
-        font-size: 1em;
-      }
-    }
-  }
-  > div {
-    align-items: center;
-  }
-  p {
-    max-width: 100%;
-    padding: 0 10px;
-  }
-`;
-
-const P_NoWrap = styled(P)`
-  max-width: 100%;
-  white-space: nowrap;
+  width: 22em;
+  max-width: 100vw;
+  filter: drop-shadow(0px 5px 15px #3C7);
 `;
 
 const Span = styled.span`
   img {
-    top: 11px;
+    width: 3.4em !important;
+    top: 0.3em;
     position: relative;
+    padding-left: 0.2em;
   }
 `;
