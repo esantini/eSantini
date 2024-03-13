@@ -3,17 +3,17 @@ import styled from '@emotion/styled';
 
 import logo from '../images/logo.svg';
 
-const Nav = () => (
-  <NavContainer>
+const CornerLogo = () => (
+  <Container>
     <Link to="/">
       <img alt="Logo link to home" src={logo} />
     </Link>
-  </NavContainer>
+  </Container>
 );
 
-export default Nav;
+export default CornerLogo;
 
-const NavContainer = styled.nav`
+const Container = styled.nav`
   position: absolute;
   top: 0;
   left: 0;

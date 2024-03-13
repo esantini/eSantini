@@ -154,6 +154,8 @@ const TopRightDiv = styled.div`
 const LinksWrapper = styled.div`
   display: flex;
   flex-direction: column;
+  gap: 0.5em;
+  padding: 0.5em 0;
   margin-bottom: .5em;
 `;
 

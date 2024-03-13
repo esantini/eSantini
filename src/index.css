@@ -247,6 +247,7 @@ h3 {
 #toasty img {
   width: 130px;
   height: auto;
+  display: block;
 }
 #toasty.show {
   right: 0px;

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import styled from '@emotion/styled';
 
-import { GithubLink, InputMessage } from 'components';
+import { GithubLink, InputMessage, Hr } from 'components';
 import { getLight, setLight } from 'utils';
 import rasPiImg from 'images/raspberry-pi-4-labelled.png'
 
@@ -46,7 +46,7 @@ const RaspberryPi = () => {
           <h3>Send me a message:</h3>
           <InputMessage />
         </div>
-        <hr />
+        <Hr />
         <div>
           <h3>Light switch:</h3>
           Light is {currentLight ? 'on' : 'off'}
@@ -89,11 +89,6 @@ export default RaspberryPi;
 
 const Header = styled.header`
   margin-top: 20px;
-`;
-
-const Hr = styled.hr`
-  width: 70%;
-  margin-bottom: 1em;
 `;
 
 const RpiInfo = styled.section`

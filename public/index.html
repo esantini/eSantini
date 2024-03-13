@@ -39,23 +39,36 @@
       To create a production bundle, use `npm run build` or `yarn build`.
     -->
     <script>
-      let kkeys = [];
-      const audio = new Audio('%PUBLIC_URL%/Toasty.mp3'),
-        konami = '38,38,40,40,37,39,37,39,66,65';
+      (() => {
+        let kIndex = 0;
+        const audio = new Audio('%PUBLIC_URL%/Toasty.mp3');
+        const u = 'ArrowUp',
+          d = 'ArrowDown',
+          l = 'ArrowLeft',
+          r = 'ArrowRight',
+          a = 'KeyA',
+          b = 'KeyB';
+        const konami = [u, u, d, d, l, r, l, r, b, a];
 
-      document.addEventListener('keydown', function (e) {
-        kkeys.push(e.keyCode);
-        if (kkeys.toString().indexOf(konami) >= 0) {
-          audio.play();
-          setTimeout(function () {
-            document.getElementById('toasty').classList.add('show');
-          }, 300);
-          setTimeout(function () {
-            document.getElementById('toasty').classList.remove('show');
-          }, 1000);
-          kkeys = [];
-        }
-      });
+        document.addEventListener('keydown', (e) => {
+          if (e.code === konami[kIndex]) {
+            kIndex++;
+            if (kIndex === konami.length) {
+              audio.play();
+              setTimeout(
+                () => document.getElementById('toasty').classList.add('show'),
+                300
+              );
+              setTimeout(
+                () =>
+                  document.getElementById('toasty').classList.remove('show'),
+                1000
+              );
+              kIndex = 0;
+            }
+          } else kIndex = 0;
+        });
+      })();
     </script>
   </body>
 </html>

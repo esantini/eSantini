@@ -26,7 +26,7 @@ const ProjectRafin = () => (
         <div className="column">
           <h3>Building with Next.js</h3>
           Rafin Bass Fishing&apos;s website, built on <strong className="highlight">Next.js</strong>, showcases cutting-edge
-          responsive design and modern web technologies. Starting with earlier versions, the site evolved as a
+          responsive design and modern web technologies. Starting with version 11, the site evolved as a
           learning platform, particularly with the adoption of Next.js 14, improving performance and achieving
           over 95% scores in <strong className="highlight">Google&apos;s Lighthouse</strong>. Enhancements include
           seamless user experiences through <strong className="highlight">Server Side Rendering</strong> and an

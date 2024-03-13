@@ -17,7 +17,8 @@ const Home = ({ user }) => (
       <Desc style={{ marginTop: '1rem' }}>
         Welcome to my digital playground, where{' '}
         <strong className='highlight'>JavaScript</strong>, <strong className='highlight'>React.js</strong>,
-        and <strong className='highlight'>Node.js</strong> are the main attractions.
+        and <strong className='highlight'>Node.js</strong> are the main attractions. This website is
+        hosted on a <strong className='highlight' style={{ whiteSpace: 'nowrap' }}>Raspberry Pi</strong> in my apartment.
       </Desc>
       <Desc>
         I&apos;m Esteban, a <strong className='highlight'>front-end</strong> expert and{' '}
@@ -48,7 +49,7 @@ const Home = ({ user }) => (
 
     <LatestProjects />
 
-    <h1>Thank you for your visit</h1>
+    <h1 style={{ marginTop: '1.5em' }}>Thank you for your visit!</h1>
   </>
 );
 

@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 
-import Nav from 'components/Nav';
+import CornerLogo from 'components/CornerLogo';
 import TopMenu from 'components/TopMenu';
 import Chat from 'components/Chat';
 import Home from 'pages/Home';
@@ -36,15 +36,15 @@ function App() {
               <Home user={user} />
             </Route>
             <Route path="/raspberrypi">
-              <Nav />
+              <CornerLogo />
               <RaspberryPi />
             </Route>
             <Route path="/camera">
-              <Nav />
+              <CornerLogo />
               <CameraStream user={user} />
             </Route>
             <Route path="/login">
-              <Nav />
+              <CornerLogo />
               <Login user={user} setUser={setUser} />
             </Route>
           </Switch>

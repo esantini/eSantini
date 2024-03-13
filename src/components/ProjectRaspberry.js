@@ -9,8 +9,10 @@ const ProjectRaspberry = () => (
   <div className="project">
     <h2>Raspberry Pi</h2>
     <p>
-      This project was a fun way to experiment with the Raspberry Pi and its GPIO pins,
-      and to build a simple web interface to control the lights in my apartment.
+      This website, hosted on a Raspberry Pi and developed with <strong className="highlight">React</strong> for
+      the frontend and a <strong className="highlight">Node.js API</strong> for the backend, serves as a creative
+      playground to explore the Raspberry Pi&apos;s GPIO pins and develop a web interface for controlling apartment lighting.
+      Furthermore, by integrating a camera stream, this project has evolved into a valuable addition to my home security system.
     </p>
     <br />
     <p>
@@ -25,21 +27,22 @@ const ProjectRaspberry = () => (
             alt="Raspberry Pi 1"
           />
           <p>
-            In this project I transformed my apartment into a tech playground. Hosting a previous version
-            of this site on a Raspberry Pi, shielded by <strong className="highlight">Cloudflare</strong>
-            {' '}and streamlined with <strong className="highlight">NGINX</strong>,
+            In this project I transformed my apartment into a tech playground.
+            Hosting this site on a Raspberry Pi, shielded
+            by <strong className="highlight">Cloudflare</strong> and streamlined
+            with <strong className="highlight">NGINX</strong>,
             I ventured into electronics by controlling lights and screens via web interfaces.
           </p>
           <br />
           <p>
-            The project also included a homemade <strong className="highlight">CI/CD</strong> system,
+            The project also includes a homemade <strong className="highlight">CI/CD</strong> system,
             using <strong className="highlight">GitHub Actions</strong> and <strong className="highlight">Node.js</strong> to
             deploy updates through bash scripts—clunky yet effective. Plus,
-            a <strong className="highlight">live feed camera</strong> added a personal touch.
+            a <strong className="highlight">live feed camera</strong> adds a personal touch.
           </p>
           <br />
           <p>
-            It was a hands-on dive into web hosting, automation, and a bit of electronics,
+            It&apos;s a hands-on dive into web hosting, automation, and a bit of electronics,
             showcasing the versatility of software engineering beyond conventional boundaries.
           </p>
         </div>
