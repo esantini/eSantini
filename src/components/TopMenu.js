@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
@@ -27,12 +27,13 @@ const renderLinks = (p) => (<>
 const TopMenu = ({ user, setUser }) => {
   const [isOpen, setIsOpen] = useState(false);
   const wrapperRef = useRef(null);
-  useClickOutside(wrapperRef, () => {
+  const handleClickOutside = useCallback(() => {
     if (isOpen) {
       setIsOpen(false);
       trackEvent('click', 'TopMenu', 'close', 'outside');
     }
-  });
+  }, [isOpen]);
+  useClickOutside(wrapperRef, handleClickOutside);
   const openMenu = () => {
     if (!isOpen) {
       setIsOpen(true);
