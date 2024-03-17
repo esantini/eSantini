@@ -5,6 +5,7 @@ import { GoogleOAuthProvider } from '@react-oauth/google';
 import CornerLogo from 'components/CornerLogo';
 import TopMenu from 'components/TopMenu';
 import Chat from 'components/Chat';
+import PageAnalytics from 'components/PageAnalytics';
 import Home from 'pages/Home';
 import Login from 'pages/auth/Login';
 import RaspberryPi from 'pages/RaspberryPi';
@@ -29,22 +30,19 @@ function App() {
   return (
     <GoogleOAuthProvider clientId={CLIENT_ID}>
       <Router>
+        <PageAnalytics />
         <main>
           <TopMenu user={user} setUser={setUser} />
+          <CornerLogo />
           <Switch>
             <Route exact path="/">
               <Home user={user} />
             </Route>
-            <Route path="/raspberrypi">
-              <CornerLogo />
-              <RaspberryPi />
-            </Route>
+            <Route path="/raspberrypi" component={RaspberryPi} />
             <Route path="/camera">
-              <CornerLogo />
               <CameraStream user={user} />
             </Route>
             <Route path="/login">
-              <CornerLogo />
               <Login user={user} setUser={setUser} />
             </Route>
           </Switch>

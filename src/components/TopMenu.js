@@ -3,7 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 import GoogleLoginButton from 'pages/auth/GoogleLoginButton';
-import { logOut, useClickOutside } from 'utils';
+import { logOut, useClickOutside, trackEvent } from 'utils';
 import styled from '@emotion/styled';
 
 const LINKS = [
@@ -27,7 +27,18 @@ const renderLinks = (p) => (<>
 const TopMenu = ({ user, setUser }) => {
   const [isOpen, setIsOpen] = useState(false);
   const wrapperRef = useRef(null);
-  useClickOutside(wrapperRef, () => setIsOpen(false));
+  useClickOutside(wrapperRef, () => {
+    if (isOpen) {
+      setIsOpen(false);
+      trackEvent('click', 'TopMenu', 'close', 'outside');
+    }
+  });
+  const openMenu = () => {
+    if (!isOpen) {
+      setIsOpen(true);
+      trackEvent('click', 'TopMenu', 'open', 'inside');
+    }
+  }
 
   const location = useLocation();
   const { pathname } = location;
@@ -38,9 +49,10 @@ const TopMenu = ({ user, setUser }) => {
   const toggleMenu = e => {
     e.stopPropagation();
     setIsOpen(v => !v);
+    trackEvent('click', 'TopMenu', isOpen ? 'close' : 'open', 'inside');
   };
   return (
-    <TopRightDiv isOpen={isOpen} onClick={() => setIsOpen(true)} ref={wrapperRef}>
+    <TopRightDiv isOpen={isOpen} onClick={openMenu} ref={wrapperRef}>
       {user?.name ?
         <>
           <div className='userMenu' onClick={toggleMenu}>
@@ -57,6 +69,7 @@ const TopMenu = ({ user, setUser }) => {
                   e.stopPropagation();
                   logOut(setUser);
                   setIsOpen(false);
+                  trackEvent('click', 'TopMenu', 'Log Out');
                 }}
               >
                 Log out
@@ -77,6 +90,7 @@ const TopMenu = ({ user, setUser }) => {
                   setUser={(user) => {
                     setUser(user);
                     setIsOpen(false);
+                    trackEvent('click', 'TopMenu', 'Log In');
                   }}
                 />
               </div>

@@ -3,6 +3,7 @@ import useClickOutside from './useClickOutside';
 import { logOut } from './authUtils';
 import { setLight, getLight } from './lightControls';
 import { getWeather, setMessage, getCurrentMessage } from './miscApiCalls';
+import { trackPageView, trackEvent } from './analytics';
 
 export {
   logOut,
@@ -13,4 +14,6 @@ export {
   setMessage,
   useClickOutside,
   getCurrentMessage,
+  trackPageView,
+  trackEvent,
 };

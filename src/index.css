@@ -101,6 +101,16 @@ body {
 /* Large devices (desktops, 1500px and up) */
 @media (min-width: 1500px) {
   body {
+    padding-left: 21rem;
+    padding-right: 21rem;
+    font-size: 1.7em;
+  }
+}
+/* Large devices (desktops, 1500px and up) */
+@media (min-width: 1900px) {
+  body {
+    padding-left: 26rem;
+    padding-right: 26rem;
     font-size: 1.7em;
   }
 }

@@ -1,16 +1,18 @@
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import styled from '@emotion/styled';
 
 import logo from '../images/logo.svg';
 
-const CornerLogo = () => (
-  <Container>
-    <Link to="/">
-      <img alt="Logo link to home" src={logo} />
-    </Link>
-  </Container>
-);
-
+const CornerLogo = () => {
+  const { pathname } = useLocation();
+  return pathname === '/' ? null : (
+    <Container>
+      <Link to="/">
+        <img alt="Logo link to home" src={logo} />
+      </Link>
+    </Container>
+  );
+}
 export default CornerLogo;
 
 const Container = styled.nav`

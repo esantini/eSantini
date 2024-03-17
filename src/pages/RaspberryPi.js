@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import styled from '@emotion/styled';
 
 import { GithubLink, InputMessage, Hr } from 'components';
-import { getLight, setLight } from 'utils';
+import { getLight, setLight, trackEvent } from 'utils';
 import rasPiImg from 'images/raspberry-pi-4-labelled.png'
 
 const roundNumber = (value, decimals = 0) =>
@@ -16,6 +16,7 @@ const RaspberryPi = () => {
   const setLightClick = () => {
     setCurrentLight(!currentLight);
     setLight(!currentLight);
+    trackEvent('click', 'Light', 'a', currentLight ? 'off' : 'on');
   }
 
   useEffect(() => {
@@ -135,6 +136,8 @@ const ToggleButtonWrapper = styled.div`
   background-color: ${({ isOn }) => isOn ? '#3b973b' : '#ccc'};
   border-radius: 1.5em;
   cursor: pointer;
+  box-shadow: inset 0.2em 0.1em 0.2em rgb(0 0 0 / 55%);
+  border: 1px solid black;
 
   /* Toggle button */
   button {
@@ -147,6 +150,7 @@ const ToggleButtonWrapper = styled.div`
     border-radius: 1.5em;
     transition: 0.3s;
     cursor: pointer;
+    box-shadow: inset -0.2em -0.2em 0.7em rgb(0 0 0 / 41%);
     ${({ isOn }) => isOn ? 'left: 50%' : ''}
   }
 `;

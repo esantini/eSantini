@@ -1,10 +1,14 @@
 import { useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
+import { trackEvent } from 'utils';
 
-const ReadMore = ({ maxHeight = 720, children }) => {
+const ReadMore = ({ maxHeight = 720, track, children }) => {
   const [isReadMore, setIsReadMore] = useState(false);
   const toggleReadMore = useCallback(
-    () => setIsReadMore(v => !v),
+    () => {
+      setIsReadMore(v => !v);
+      trackEvent('click', 'ReadMore', track, isReadMore ? 'less' : 'more');
+    },
     [setIsReadMore],
   );
   return (
@@ -25,6 +29,7 @@ const ReadMore = ({ maxHeight = 720, children }) => {
 
 ReadMore.propTypes = {
   maxHeight: PropTypes.number,
+  track: PropTypes.string,
   children: PropTypes.node,
 };
 

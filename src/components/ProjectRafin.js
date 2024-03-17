@@ -14,7 +14,7 @@ const ProjectRafin = () => (
       a framework that had just surged in popularity. It blends my newfound skills with the excitement
       of <i>Amigo Style</i> fishing at Oviachic Lake.
     </p>
-    <ReadMore maxHeight={820}>
+    <ReadMore maxHeight={820} track='Rafin'>
       <ColumnWrapper>
         <div className="column">
           <h3>About Rafin&apos;s Website</h3>

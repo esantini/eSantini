@@ -19,7 +19,7 @@ const ProjectRaspberry = () => (
       Check out the <ExternalLink href={`${MY_GITHUB_URL}/eSantini`} className="highlight">Front-End repo</ExternalLink>
       {' '}and the <ExternalLink href={`${MY_GITHUB_URL}/api`} className="highlight">API repo</ExternalLink>.
     </p>
-    <ReadMore>
+    <ReadMore track='Raspberry Pi'>
       <div className="raspiContainer">
         <div className="raspiText">
           <RaspiImage

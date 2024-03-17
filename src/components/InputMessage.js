@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { getCurrentMessage, setMessage } from '../utils';
+import { getCurrentMessage, setMessage, trackEvent } from 'utils';
 import styled from '@emotion/styled';
 
 const InputMessage = () => {
@@ -19,6 +19,7 @@ const InputMessage = () => {
         setInputValue('');
       }
     });
+    trackEvent('submit', 'Message', 'a', inputValue);
   };
 
   useEffect(

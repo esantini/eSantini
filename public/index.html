@@ -25,6 +25,28 @@
 -->
     <title>eSantini Web Development</title>
   </head>
+  <script
+    async
+    src="https://www.googletagmanager.com/gtag/js?id=G-83KNBLJ583"
+  ></script>
+  <script>
+    const isDevCookie = document.cookie
+      .split(';')
+      .some((item) => item.trim().startsWith('is_ese='));
+    const isLocalhost = window.location.hostname === 'localhost';
+
+    const isTracking = !(isLocalhost || isDevCookie);
+
+    window.dataLayer = window.dataLayer || [];
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+    if (isTracking) {
+      gtag('js', new Date());
+      gtag('config', 'G-83KNBLJ583');
+    }
+  </script>
+
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
