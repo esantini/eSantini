@@ -1,26 +1,32 @@
+import { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import styled from '@emotion/styled';
 import videoLocked from '../images/video-locked.png';
 
-const CameraStream = ({ user }) => (
-  <>
-    <h1>Camera Stream</h1>
+const CameraStream = ({ user }) => {
+  useEffect(() => {
+    document.title = 'Camera Stream - eSantini';
+  }, []);
+  return (
+    <>
+      <h1>Camera Stream</h1>
 
-    <PlayerWrapper>
-      {user?.isWhitelisted ?
-        <img src="/stream" className="camera" />
-        :
-        <>
-          <p>
-            You must be {user.name ? '' : 'Logged In and '}
-            Whitelisted to view this camera feed.
-          </p>
-          <ImgLocked src={videoLocked} alt="video locked" />
-        </>
-      }
-    </PlayerWrapper>
-  </>
-);
+      <PlayerWrapper>
+        {user?.isWhitelisted ?
+          <img src="/stream" className="camera" />
+          :
+          <>
+            <p>
+              You must be {user.name ? '' : 'Logged In and '}
+              Whitelisted to view this camera feed.
+            </p>
+            <ImgLocked src={videoLocked} alt="video locked" />
+          </>
+        }
+      </PlayerWrapper>
+    </>
+  );
+};
 
 CameraStream.propTypes = {
   user: PropTypes.object,

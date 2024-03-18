@@ -10,6 +10,7 @@ import Home from 'pages/Home';
 import Login from 'pages/auth/Login';
 import RaspberryPi from 'pages/RaspberryPi';
 import CameraStream from 'pages/CameraStream';
+import Analytics from 'pages/Analytics';
 
 import { fetchUser } from 'utils';
 
@@ -44,6 +45,9 @@ function App() {
             </Route>
             <Route path="/login">
               <Login user={user} setUser={setUser} />
+            </Route>
+            <Route path="/analytics">
+              <Analytics />
             </Route>
           </Switch>
         </main>

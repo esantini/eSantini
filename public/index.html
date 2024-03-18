@@ -34,6 +34,7 @@
       .split(';')
       .some((item) => item.trim().startsWith('is_ese='));
     const isLocalhost = window.location.hostname === 'localhost';
+    if (isDevCookie) console.log('Welcome ese');
 
     const isTracking = !(isLocalhost || isDevCookie);
 
