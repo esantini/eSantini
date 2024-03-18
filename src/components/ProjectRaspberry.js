@@ -1,6 +1,6 @@
 import ReadMore from './ReadMore';
 import ExternalLink from './ExternalLink';
-import rPiImg from 'images/raspberry-pi-1.jpg';
+import rPiImg from 'assets/images/raspberry-pi-1.jpg';
 import styled from '@emotion/styled';
 
 const MY_GITHUB_URL = 'https://github.com/esantini';

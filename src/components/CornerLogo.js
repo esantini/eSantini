@@ -1,7 +1,7 @@
 import { Link, useLocation } from 'react-router-dom';
 import styled from '@emotion/styled';
 
-import logo from '../images/logo.svg';
+import logo from 'assets/images/logo.svg';
 
 const CornerLogo = () => {
   const { pathname } = useLocation();

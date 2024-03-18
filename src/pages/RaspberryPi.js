@@ -3,7 +3,7 @@ import styled from '@emotion/styled';
 
 import { GithubLink, InputMessage, Hr } from 'components';
 import { getLight, setLight, trackEvent } from 'utils';
-import rasPiImg from 'images/raspberry-pi-4-labelled.png'
+import rasPiImg from 'assets/images/raspberry-pi-4-labelled.png';
 
 const roundNumber = (value, decimals = 0) =>
   Math.round(parseFloat(value, 10) * 10 ** decimals) / 10 ** decimals;

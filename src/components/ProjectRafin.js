@@ -1,7 +1,7 @@
 import ReadMore from './ReadMore';
 import ExternalLink from './ExternalLink';
 import styled from '@emotion/styled';
-import rafinImage from 'images/RafinBassFishing.png'
+import rafinImage from 'assets/images/RafinBassFishing.png'
 
 const RAFIN_URL = 'https://rafinbassfishing.com.mx/';
 

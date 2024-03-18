@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import styled from '@emotion/styled';
-import githubLogo from 'images/GitHub_Logo_Black.png';
-import octocat from 'images/Octocat.png';
+import githubLogo from 'assets/images/GitHub_Logo_Black.png';
+import octocat from 'assets/images/Octocat.png';
 
 const GithubLink = ({ compact = false }) => (
   <A

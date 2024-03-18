@@ -14,7 +14,7 @@ import Analytics from 'pages/Analytics';
 
 import { fetchUser } from 'utils';
 
-import toasty from 'images/spiderToasty.png';
+import toasty from 'assets/images/spiderToasty.png';
 
 const CLIENT_ID = '482181895955-i27hea4kgp5s8u67gvsgl56k7t1l966s.apps.googleusercontent.com';
 const WEB_SOCKET_URL = 'esantini.com';

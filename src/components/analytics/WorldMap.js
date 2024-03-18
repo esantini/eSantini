@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 import * as d3 from 'd3';
 import { feature } from 'topojson-client';
 import styled from '@emotion/styled';
-import countriesJson from './countries.json';
-import usStatesJson from './states.json';
+import countriesJson from 'assets/json/countries.json';
+import usStatesJson from 'assets/json/states.json';
 import { countriesHide2, countriesHide4, countriesHide6, countriesHide10 } from './countriesHide';
 
 const setCountryLabelClass = d => {
