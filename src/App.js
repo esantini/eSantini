@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 
 import CornerLogo from 'components/CornerLogo';
-import TopMenu from 'components/TopMenu';
+import NavMenu from 'components/NavMenu';
 import Chat from 'components/Chat';
 import PageAnalytics from 'components/PageAnalytics';
 import Home from 'pages/Home';
@@ -16,6 +16,7 @@ import { fetchUser } from 'utils';
 
 import toasty from 'assets/images/spiderToasty.png';
 
+const setAnonCookie = () => document.cookie = 'is_ese=true; expires=Fri, 31 Dec 9999 23:59:59 GMT; path=/';
 const CLIENT_ID = '482181895955-i27hea4kgp5s8u67gvsgl56k7t1l966s.apps.googleusercontent.com';
 const WEB_SOCKET_URL = 'esantini.com';
 const CHAT_ENABLED = false;
@@ -33,7 +34,7 @@ function App() {
       <Router>
         <PageAnalytics />
         <main>
-          <TopMenu user={user} setUser={setUser} />
+          <NavMenu user={user} setUser={setUser} />
           <CornerLogo />
           <Switch>
             <Route exact path="/">
@@ -46,8 +47,9 @@ function App() {
             <Route path="/login">
               <Login user={user} setUser={setUser} />
             </Route>
-            <Route path="/analytics">
-              <Analytics />
+            <Route path="/analytics" component={Analytics} />
+            <Route path="/makemeanon">
+              <button onClick={setAnonCookie}>Anon</button>
             </Route>
           </Switch>
         </main>

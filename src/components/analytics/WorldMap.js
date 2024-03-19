@@ -36,7 +36,7 @@ const WorldMap = ({ points = [] }) => {
 
     // Initialize zoom behavior
     const zoom = d3.zoom()
-      .scaleExtent([1, 256])
+      .scaleExtent([1, 64])
       .on('zoom', ({ transform }) => {
         svgRef.current.selectAll('g').attr('transform', transform);
         svgRef.current.selectAll('.point').attr('r', 5 / transform.k); // Adjust circle size based on zoom
@@ -125,7 +125,7 @@ const WorldMap = ({ points = [] }) => {
         .attr('cx', d => projection([d[1], d[0]])[0])
         .attr('cy', d => projection([d[1], d[0]])[1])
         .attr('r', 5)
-        .attr('fill', 'brown');
+        .attr('fill', 'darkgreen');
     }
   };
 
@@ -139,10 +139,16 @@ WorldMap.propTypes = {
 export default WorldMap;
 
 const SvgContainer = styled.div`
+  max-width: 1000px;
   border: 1px solid black;
-  background: aliceblue;
-  background: lightblue;
   background: powderblue;
+  overflow: hidden;
+  max-height: 60vh;
+
+  @media (max-width: 1100px) {
+    max-width: 95vw;
+  }
+
   svg {
     display: block;
     cursor: grab;

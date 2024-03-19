@@ -7,6 +7,7 @@ const PageAnalytics = () => {
 
   useEffect(() => {
     trackPageView(location.pathname);
+    window.scrollTo(0, 0);
   }, [location]);
   return null;
 }

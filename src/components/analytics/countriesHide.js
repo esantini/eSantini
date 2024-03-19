@@ -1,7 +1,6 @@
 
 const countriesHide2 = [
   'Jamaica',
-  'Trinidad and Tobago',
   'Burkina Faso',
   'Ghana',
   'Morocco',
@@ -40,7 +39,6 @@ const countriesHide2 = [
   'Lithuania',
   'Austria',
   'Saudi Arabia',
-  'Slovakia',
   'Croatia',
   'Cyprus',
   'Djibouti',
@@ -61,6 +59,12 @@ const countriesHide2 = [
   'Vanuatu',
   'New Caledonia',
   'Niger',
+  'Fr. S. Antarctic Lands',
+  'Falkland Is.',
+  'Liberia',
+  'Botswana',
+  'Paraguay',
+  'Solomon Is.',
 ];
 const countriesHide4 = [
   'Haiti',
@@ -82,7 +86,7 @@ const countriesHide4 = [
   'Benin',
   'Bhutan',
   'Guatemala',
-  'Côte d\'Ivoire',
+  'Slovakia',
   'Togo',
   'Cambodia',
   'Vietnam',
@@ -99,6 +103,7 @@ const countriesHide4 = [
   'Zambia',
   'Portugal',
   'Serbia',
+  'Trinidad and Tobago',
   'United Arab Emirates',
 ];
 const countriesHide6 = [
@@ -109,6 +114,7 @@ const countriesHide6 = [
   'Lesotho',
   'Macedonia',
   'El Salvador',
+  'Côte d\'Ivoire',
 ];
 const countriesHide10 = ['Dominican Rep.', 'Bosnia and Herz.', 'Kosovo', 'N. Cyprus', 'Israel', 'Palestine', 'Azerbaijan'];
 
