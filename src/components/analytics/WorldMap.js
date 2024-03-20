@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import * as d3 from 'd3';
 import { feature } from 'topojson-client';
@@ -16,7 +16,12 @@ const setCountryLabelClass = d => {
 
   return `${d.id == 840 ? 'usa ' : ''}country-label${hideType}`;
 }
-const WorldMap = ({ points = [] }) => {
+const projection = d3.geoMercator().scale(150).translate([1000 / 2, 600 / 2]);
+const countries = feature(countriesJson, countriesJson.objects.countries).features;
+const usStates = feature(usStatesJson, usStatesJson.objects.states).features;
+
+const WorldMap = ({ points = [], selectedPoint }) => {
+  const [currentZoom, setCurrentZoom] = useState(1);
   const ref = useRef();
   const svgRef = useRef();
 
@@ -28,16 +33,18 @@ const WorldMap = ({ points = [] }) => {
       svgRef.current.append('g').attr('class', 'labels');
       svgRef.current.append('g').attr('class', 'state-labels');
       svgRef.current.append('g').attr('class', 'points');
+      svgRef.current.append('g').attr('class', 'selectedPoint');
     }
+    drawMap();
+  }, []);
 
-    const countries = feature(countriesJson, countriesJson.objects.countries).features;
-    const usStates = feature(usStatesJson, usStatesJson.objects.states).features;
-    drawMap(countries, usStates);
-
+  useEffect(() => {
+    drawPoints();
     // Initialize zoom behavior
     const zoom = d3.zoom()
       .scaleExtent([1, 64])
       .on('zoom', ({ transform }) => {
+        setCurrentZoom(transform.k);
         svgRef.current.selectAll('g').attr('transform', transform);
         svgRef.current.selectAll('.point').attr('r', 5 / transform.k); // Adjust circle size based on zoom
         svgRef.current.selectAll('.country-label').style('font-size', `${Math.ceil(10 / transform.k)}px`);
@@ -56,13 +63,25 @@ const WorldMap = ({ points = [] }) => {
     svgRef.current.call(zoom);
   }, [points]);
 
-  const drawMap = (countries, usStates) => {
+  useEffect(() => {
+    svgRef.current.select('.selectedPoint').selectAll('*').remove();
+    if (selectedPoint) {
+      svgRef.current.select('.selectedPoint')
+        .append('circle')
+        .attr('class', 'point')
+        .attr('cx', projection([selectedPoint[1], selectedPoint[0]])[0])
+        .attr('cy', projection([selectedPoint[1], selectedPoint[0]])[1])
+        .attr('r', 6 / currentZoom)
+        .attr('fill', 'brown');
+    }
+  }, [selectedPoint]);
+
+  const drawMap = () => {
     // Cleanup previous drawings
     svgRef.current.select('.countries').selectAll('*').remove();
     svgRef.current.select('.states').selectAll('*').remove();
     svgRef.current.select('.points').selectAll('*').remove();
 
-    const projection = d3.geoMercator().scale(150).translate([1000 / 2, 600 / 2]);
     const pathGenerator = d3.geoPath().projection(projection);
 
     // Draw countries
@@ -114,8 +133,10 @@ const WorldMap = ({ points = [] }) => {
       .attr('alignment-baseline', 'central')
       .style('font-size', '10px')
       .text(d => d.properties.name);
+  }
 
-    // Draw points
+  const drawPoints = () => {
+    // Draw points  
     if (points.length) {
       svgRef.current.select('.points')
         .selectAll('.point')
@@ -124,7 +145,7 @@ const WorldMap = ({ points = [] }) => {
         .attr('class', 'point')
         .attr('cx', d => projection([d[1], d[0]])[0])
         .attr('cy', d => projection([d[1], d[0]])[1])
-        .attr('r', 5)
+        .attr('r', 5 / currentZoom)
         .attr('fill', 'darkgreen');
     }
   };
@@ -133,7 +154,8 @@ const WorldMap = ({ points = [] }) => {
 };
 
 WorldMap.propTypes = {
-  points: PropTypes.array
+  points: PropTypes.array,
+  selectedPoint: PropTypes.array,
 };
 
 export default WorldMap;
