@@ -13,14 +13,14 @@ const CameraStream = ({ user }) => {
 
       <PlayerWrapper>
         {user?.isWhitelisted ?
-          <img src="/stream" className="camera" />
+          <img src={isLocalhost ? '/api/stream.mp4' : '/stream'} className='camera' />
           :
           <>
             <p>
               You must be {user.name ? '' : 'Logged In and '}
               Whitelisted to view this camera feed.
             </p>
-            <ImgLocked src={videoLocked} alt="video locked" />
+            <ImgLocked src={videoLocked} alt='video locked' />
           </>
         }
       </PlayerWrapper>
@@ -35,12 +35,14 @@ CameraStream.propTypes = {
 export default CameraStream;
 
 const PlayerWrapper = styled.div`
-  max-width: 50vw;
   .camera {
     width: 100%;
   }
   img {
     border-radius: 1em;
+  }
+  @media (max-width: 768px) {
+    max-width: 100vw;
   }
 `;
 

@@ -3,23 +3,24 @@ import { Link, useLocation } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 import { logOut, useClickOutside, trackEvent } from 'utils';
+import defaultProfileImg from 'assets/images/default-profile-img.png';
 import styled from '@emotion/styled';
 
 const LINKS = [
   { path: '/', text: 'Home' },
   { path: '/raspberrypi', text: 'Raspberry Pi' },
   { path: '/camera', text: 'Camera Stream' },
-  // { path: '/analytics', text: 'Analytics' },
+  { path: '/analytics', text: 'Analytics', whitelist: true },
 ];
 
-const renderLinks = (p) => (<>
+const renderLinks = (p, isWhitelisted) => (<>
   <hr style={{ marginTop: '.3em' }} />
   <LinksWrapper>
-    {LINKS.map(({ path, text }) => (
+    {LINKS.map(({ path, text, whitelist }) => (!whitelist || isWhitelisted) ? (
       <Link key={path} to={path} className={p === path ? 'disabled' : ''} >
         {text}
       </Link>
-    ))}
+    ) : null)}
   </LinksWrapper>
   <hr />
 </>);
@@ -57,12 +58,16 @@ const NavMenu = ({ user, setUser }) => {
       {user?.name ?
         <>
           <div className='userMenu' onClick={toggleMenu}>
-            <img alt='User Profile Image' src={user.picture} />
+            <img
+              alt='User Profile Image'
+              src={user.picture}
+              onError={e => e.target.src = defaultProfileImg}
+            />
             {user.name}
           </div>
           {isOpen &&
             <>
-              {renderLinks(pathname)}
+              {renderLinks(pathname, user.isWhitelisted)}
               <button
                 style={{ cursor: 'pointer' }}
                 onClick={(e) => {
@@ -164,10 +169,4 @@ const LinksWrapper = styled.div`
   gap: 0.5em;
   padding: 0.5em 0;
   margin-bottom: .5em;
-`;
-
-const Br = styled.br`
-  margin-bottom: .5em;
-  display: block;
-  content: '';
 `;

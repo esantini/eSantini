@@ -144,6 +144,8 @@ const SvgContainer = styled.div`
   background: powderblue;
   overflow: hidden;
   max-height: 60vh;
+  border-radius: 0.5em;
+  box-shadow: 0.1em 0.1em 0.3em gray;
 
   @media (max-width: 1100px) {
     max-width: 95vw;
