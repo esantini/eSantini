@@ -1,5 +1,7 @@
 import { Fragment, useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 import WorldMap from 'components/analytics/WorldMap';
+import ConfirmationModal from 'components/ConfirmationModal';
 import styled from '@emotion/styled';
 
 const dateOptions = {
@@ -12,11 +14,13 @@ const getFormattedDate = (dateString) => {
   return new Intl.DateTimeFormat('en-US', dateOptions).format(date);
 }
 
-const Analytics = () => {
+const Analytics = ({ user }) => {
   const [points, setPoints] = useState([]);
   const [sessions, setSessions] = useState([]);
   const [events, setEvents] = useState([]);
   const [selectedSession, setSelectedSession] = useState({});
+  const [toDeleteId, setToDeleteId] = useState(-1);
+
   useEffect(() => {
     document.title = 'Analytics - eSantini';
     fetch('api/worldpoints')
@@ -48,7 +52,7 @@ const Analytics = () => {
             {sessions.map(s => (<Fragment key={s.sessionId}>
               <tr
                 onClick={() => setSelectedSession(({ $loki }) => s.$loki === $loki ? {} : s)}
-                className={selectedSession.$loki === s.$loki ? 'isSelected' : ''}
+                className={`sessionRow${selectedSession.$loki === s.$loki ? ' isSelected' : ''}`}
               >
                 <td>{s.geo?.city}, {s.geo?.region}, {s.geo?.country}</td>
                 <td>{s.geo?.ll[0]}, {s.geo?.ll[1]}</td>
@@ -57,12 +61,16 @@ const Analytics = () => {
               {s.$loki === selectedSession.$loki && (<tr>
                 <td colSpan={3} className='sessionDetails'>
                   <h3>Events</h3>
+                  {user?.isAdmin &&
+                    <button
+                      className="btnDeleteSession"
+                      onClick={() => setToDeleteId(s.$loki)}
+                    >&#128465;</button>
+                  }
                   <Table>
                     <tbody>
-                      {console.log({ events })}
                       {events?.filter(e => e.sessionId === selectedSession.$loki).map(e => (
                         <tr key={e.$loki}>
-                          {console.log({ e })}
                           <td>{e.type}</td>
                           {e.type === 'page_view' ? <td colSpan={3}>{e.details.page_path}</td> : (
                             <>
@@ -82,26 +90,50 @@ const Analytics = () => {
           </tbody>
         </Table>
       </div>
+      <ConfirmationModal
+        isOpen={toDeleteId > -1}
+        onCancel={() => setToDeleteId(-1)}
+        onConfirm={() => setToDeleteId(-1)}
+      />
     </div>
   );
 }
+
+Analytics.propTypes = {
+  user: PropTypes.object,
+};
 
 export default Analytics;
 
 const Table = styled.table`
   border-spacing: 0;
-  &.sessionsTable tr {
-    cursor: pointer;
-  }
-  tr.isSelected {
-    font-weight: bold;
-  }
   td {
     border: 1px solid #ddd;
     padding: .2em;
   }
+  .sessionRow {
+    cursor: pointer;
+    &.isSelected {
+      font-weight: bold;
+    }
+  }
   .sessionDetails {
+    position: relative;
     padding: 1em;
     background: #ffffff44;
   }
+  .btnDeleteSession {
+    border: 0;
+    background: 0;
+    font-size: 1.3em;
+    color: red;
+    text-shadow: 0px 0px 1px black;
+    position: absolute;
+    top: 0;
+    right: .5em;
+    cursor: pointer;
+  }
+`;
+
+const SessionRow = styled.tr`
 `;

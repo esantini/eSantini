@@ -47,7 +47,9 @@ function App() {
             <Route path="/login">
               <Login user={user} setUser={setUser} />
             </Route>
-            <Route path="/analytics" component={Analytics} />
+            <Route path="/analytics" >
+              <Analytics user={user} />
+            </Route>
             <Route path="/makemeanon">
               <button onClick={setAnonCookie}>Anon</button>
             </Route>
