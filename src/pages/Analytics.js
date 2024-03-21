@@ -1,4 +1,4 @@
-import { Fragment, useState, useEffect } from 'react';
+import { Fragment, useState, useEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import WorldMap from 'components/analytics/WorldMap';
 import ConfirmationModal from 'components/ConfirmationModal';
@@ -36,6 +36,18 @@ const Analytics = ({ user }) => {
       .then(res => res.json())
       .then(setEvents);
   }, []);
+
+  const deleteSession = useCallback(() => {
+    fetch(`api/sessions?id=${toDeleteId}`, { method: 'DELETE' })
+      .then((res) => {
+        if (!res.ok) throw new Error('Failed to delete session');
+        else {
+          setSessions(sessions.filter(s => s.$loki !== toDeleteId));
+        }
+        setToDeleteId(-1);
+      });
+  }, [toDeleteId]);
+
   return (
     <div>
       <h1>Analytics</h1>
@@ -49,7 +61,7 @@ const Analytics = ({ user }) => {
         <h2>Recent Sessions</h2>
         <Table className='sessionsTable'>
           <tbody>
-            {sessions.map(s => (<Fragment key={s.sessionId}>
+            {sessions.map(s => (<Fragment key={s.$loki}>
               <tr
                 onClick={() => setSelectedSession(({ $loki }) => s.$loki === $loki ? {} : s)}
                 className={`sessionRow${selectedSession.$loki === s.$loki ? ' isSelected' : ''}`}
@@ -93,7 +105,7 @@ const Analytics = ({ user }) => {
       <ConfirmationModal
         isOpen={toDeleteId > -1}
         onCancel={() => setToDeleteId(-1)}
-        onConfirm={() => setToDeleteId(-1)}
+        onConfirm={deleteSession}
       />
     </div>
   );
