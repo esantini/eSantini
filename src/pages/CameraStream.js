@@ -17,7 +17,7 @@ const CameraStream = ({ user }) => {
           :
           <>
             <p>
-              You must be {user.name ? '' : 'Logged In and '}
+              You must be {user?.name ? '' : 'Logged In and '}
               Whitelisted to view this camera feed.
             </p>
             <ImgLocked src={videoLocked} alt='video locked' />
@@ -43,6 +43,10 @@ const PlayerWrapper = styled.div`
   }
   @media (max-width: 768px) {
     max-width: 100vw;
+  }
+  p {
+    margin-top: .5em;
+    text-align: center;
   }
 `;
 
