@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import WorldMap from 'components/analytics/WorldMap';
 import ConfirmationModal from 'components/ConfirmationModal';
 import styled from '@emotion/styled';
+import { fetchData } from 'utils';
 
 const dateOptions = {
   year: 'numeric', month: 'short', day: 'numeric',
@@ -23,18 +24,12 @@ const Analytics = ({ user }) => {
 
   useEffect(() => {
     document.title = 'Analytics - eSantini';
-    fetch('api/worldpoints')
-      .then(res => res.json())
-      .then(setPoints);
-    fetch('api/sessions')
-      .then(res => res.json())
-      .then((data) => {
-        data.reverse(); // Show most recent first
-        setSessions(data);
-      });
-    fetch('api/event')
-      .then(res => res.json())
-      .then(setEvents);
+    fetchData('api/worldpoints', setPoints);
+    fetchData('api/event', setEvents);
+    fetchData('api/sessions', (data) => {
+      data.reverse(); // Show most recent first
+      setSessions(data);
+    });
   }, []);
 
   const deleteSession = useCallback(() => {

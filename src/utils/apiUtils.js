@@ -18,4 +18,11 @@ const fetchUser = async (setUser) => {
   }
 }
 
-export default fetchUser;
+const fetchData = (endpoint, callback) => {
+  fetch(endpoint)
+    .then(res => res.json())
+    .then(callback)
+    .catch(console.error);
+}
+
+export { fetchUser, fetchData };
