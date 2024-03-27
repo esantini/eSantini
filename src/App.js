@@ -6,6 +6,7 @@ import CornerLogo from 'components/CornerLogo';
 import NavMenu from 'components/NavMenu';
 import Chat from 'components/Chat';
 import PageAnalytics from 'components/PageAnalytics';
+import MyDebugger from 'components/MyDebugger';
 import Home from 'pages/Home';
 import Login from 'pages/auth/Login';
 import RaspberryPi from 'pages/RaspberryPi';
@@ -50,9 +51,7 @@ function App() {
             <Route path="/analytics" >
               <Analytics user={user} />
             </Route>
-            <Route path="/makemeanon">
-              <button onClick={setAnonCookie}>Anon</button>
-            </Route>
+            <MyDebugger />
           </Switch>
         </main>
         <div id="toasty">
