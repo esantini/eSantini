@@ -52,6 +52,7 @@ body {
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
   padding: 6rem 8rem;
+  min-height: 100vh;
   background: linear-gradient(
       to bottom,
       transparent,
@@ -118,7 +119,6 @@ body {
 main {
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
   align-items: center;
 }
 
