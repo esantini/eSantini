@@ -17,17 +17,26 @@ import { fetchUser } from 'utils';
 
 import toasty from 'assets/images/spiderToasty.png';
 
-const setAnonCookie = () => document.cookie = 'is_ese=true; expires=Fri, 31 Dec 9999 23:59:59 GMT; path=/';
 const CLIENT_ID = '482181895955-i27hea4kgp5s8u67gvsgl56k7t1l966s.apps.googleusercontent.com';
-const WEB_SOCKET_URL = 'esantini.com';
-const CHAT_ENABLED = false;
+const getWebSocketUrl = (localIp) => isLocalhost ? `ws://${localIp}:8080` : 'wss://esantini.com:8080';
+const CHAT_ENABLED = isLocalhost;
 
 function App() {
   const [user, setUser] = useState(null);
-  const [ws] = useState(CHAT_ENABLED ? new WebSocket(`wss://${WEB_SOCKET_URL}:8080`) : {});
+  const [webSocket, setWebSocket] = useState(null);
 
   useEffect(() => {
     fetchUser(setUser);
+
+    if (CHAT_ENABLED) {
+      if (isLocalhost) {
+        fetch('api/localIp').then(r => r.json()).then(({ localIp }) => {
+          setWebSocket(new WebSocket(getWebSocketUrl(localIp)));
+        });
+      } else {
+        setWebSocket(new WebSocket(getWebSocketUrl()));
+      }
+    }
   }, []);
 
   return (
@@ -59,7 +68,7 @@ function App() {
         </div>
       </Router>
       {CHAT_ENABLED &&
-        <Chat user={user} ws={ws} />
+        <Chat user={user} ws={webSocket} />
       }
     </GoogleOAuthProvider>
   );

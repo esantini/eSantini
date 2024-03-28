@@ -1,10 +1,11 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import PropTypes from 'prop-types';
+import { trackEvent } from 'utils';
 import styled from '@emotion/styled';
 
 function Chat({ user, ws }) {
   const [messages, setMessages] = useState([]);
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(true);
   const [name, setName] = useState('Guest');
   const [input, setInput] = useState('');
   const messagesUl = useRef(null);
@@ -17,13 +18,15 @@ function Chat({ user, ws }) {
   }, [user]);
 
   useEffect(() => {
-    ws.onopen = () => setMessages((prevMessages) => [...prevMessages, { notification: 'Connected.' }]);
-    ws.onclose = () => setMessages((prevMessages) => [...prevMessages, { notification: 'Disconnected.' }]);
-    ws.onerror = (error) => console.error('WebSocket error:', error);
-    ws.onmessage = (event) => setMessages((prevMessages) => [...prevMessages, JSON.parse(event.data)]);
-    return () => {
-      ws.close();
-    };
+    if (ws) {
+      ws.onopen = () => setMessages((prevMessages) => [...prevMessages, { notification: 'Connected.' }]);
+      ws.onclose = () => setMessages((prevMessages) => [...prevMessages, { notification: 'Disconnected.' }]);
+      ws.onerror = (error) => console.error('WebSocket error:', error);
+      ws.onmessage = (event) => setMessages((prevMessages) => [...prevMessages, JSON.parse(event.data)]);
+      return () => {
+        ws.close();
+      };
+    }
   }, [ws]);
 
   useEffect(() => {
@@ -32,18 +35,25 @@ function Chat({ user, ws }) {
     }
   }, [messages]);
 
-  const sendMessage = () => {
-    if (input.trim() && ws && ws.readyState === WebSocket.OPEN) {
-      ws.send(JSON.stringify({ name, message: input }));
+  const handleHeaderClick = useCallback(() => {
+    setIsOpen(v => !v);
+    trackEvent('click', 'Chatini', 'Header', isOpen ? 'Close' : 'Open');
+  }, [isOpen]);
+
+  const sendMessage = useCallback(() => {
+    const newMessage = input.trim();
+    if (!newMessage) return;
+    if (ws && ws.readyState === WebSocket.OPEN) {
+      ws.send(JSON.stringify({ name, message: newMessage }));
       setInput('');
     } else {
       setMessages((prevMessages) => [...prevMessages, { notification: 'Cant send message.' }]);
     }
-  };
+  }, [input, ws, name]);
 
   return (
     <ChatContainer isOpen={isOpen}>
-      <div className="chatHeader" onClick={() => setIsOpen(v => !v)}>
+      <div className="chatHeader" onClick={handleHeaderClick}>
         <h2>Chatini</h2>
         {!user?.name &&
           <input
@@ -77,7 +87,7 @@ function Chat({ user, ws }) {
               }
             }}
           />
-          <button onClick={sendMessage}>Send</button>
+          <SendButton isActive={!!input.trim()} onClick={sendMessage}>Send</SendButton>
         </div>
       </>}
     </ChatContainer>
@@ -108,8 +118,10 @@ const ChatContainer = styled.div`
   border-left: 2px solid #888;
   border-top: 2px solid #888;
   border-top-left-radius: 1em;
+  box-shadow: ${({ isOpen }) => isOpen ? '0em 0em .5em gray' : '0'};
   
-  transition: height 0.15s ease;
+  transition: height 0.15s ease, box-shadow 0.5s ease;
+
   .chatHeader {
     cursor: pointer;
     h2 {
@@ -150,11 +162,46 @@ const ChatContainer = styled.div`
     position: absolute;
     bottom: 0;
     padding: 0.4em 0.5em;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: .5em;
     input {
-      width: 60%;
+      width: 80%;
+      padding: .5em;
+      padding-left: 1em;
+      border-radius: 1.1em;
+      height: 2.8em;
+      &:focus {
+        outline: none;
+        background: #fdf9d6;
+        box-shadow: 0 0 0.5em 0.2em #fdf9d6;
+      }
+      
+      transition: background .2s ease, box-shadow .2s ease;
     }
-    button {
-      width: 30%;
+    input, button {
+      border: 0;
     }
   }
 `;
+
+const SendButton = styled.button`
+  width: 20%;
+  font-size: 0.7em;
+  font-weight: bold;
+  background: none;
+  height: 2em;
+  border-radius: 0.6em;
+
+  ${({ isActive }) => isActive ? `
+    color: #008506;
+    cursor: pointer;
+    &:hover {
+      color: #005203;
+      background: #e0ebe1;
+    }
+  ` : 'color: #ccc;' // disabled
+  }
+`;
+
