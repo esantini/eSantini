@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import * as d3 from 'd3';
+import { hexbin as d3Hexbin } from 'd3-hexbin'
 import { feature } from 'topojson-client';
 import styled from '@emotion/styled';
 import countriesJson from 'assets/json/countries.json';
@@ -62,6 +63,10 @@ const WorldMap = ({ points = [], selectedPoint }) => {
 
     svgRef.current.call(zoom);
   }, [points]);
+
+  useEffect(() => {
+    drawPoints();
+  }, [currentZoom]);
 
   useEffect(() => {
     svgRef.current.select('.selectedPoint').selectAll('*').remove();
@@ -135,19 +140,46 @@ const WorldMap = ({ points = [], selectedPoint }) => {
       .text(d => d.properties.name);
   }
 
+  // drawPoints
   const drawPoints = () => {
-    // Draw points  
-    if (points.length) {
-      svgRef.current.select('.points')
-        .selectAll('.point')
-        .data(points)
-        .enter().append('circle')
-        .attr('class', 'point')
-        .attr('cx', d => projection([d[1], d[0]])[0])
-        .attr('cy', d => projection([d[1], d[0]])[1])
-        .attr('r', 5 / currentZoom)
-        .attr('fill', 'darkgreen');
-    }
+
+    // Clear existing points
+    svgRef.current.select('.points').selectAll('*').remove();
+
+    // Determine cluster size based on zoom
+    const clusterRadius = 5 / currentZoom;
+
+    // Use d3-hexbin or similar to cluster points
+    const hexbin = d3Hexbin()
+      .radius(clusterRadius)
+      .extent([[0, 0], [1000, 600]]);
+
+    const clusters = hexbin(points.map(d => projection([d[1], d[0]])));
+
+    // Draw clusters
+    svgRef.current.select('.points')
+      .selectAll('.cluster')
+      .data(clusters)
+      .enter().append('circle')
+      .attr('class', 'cluster')
+      .attr('cx', d => d.x)
+      .attr('cy', d => d.y)
+      .attr('r', d => Math.sqrt(d.length) * 5 / currentZoom)
+      .attr('fill', 'darkgreen');
+
+    // Add counter text
+    svgRef.current.select('.points')
+      .selectAll('.counter')
+      .data(clusters)
+      .enter().append('text')
+      .attr('class', 'counter')
+      .attr('x', d => d.x)
+      .attr('y', d => d.y)
+      .style('text-anchor', 'middle')
+      .style('font-size', `${Math.ceil(8 / currentZoom)}px`)
+      .style('fill', 'white')
+      .style('alignment-baseline', 'middle')
+      .text(d => d.length > 1 ? d.length : '');
   };
 
   return <SvgContainer><svg ref={ref} width={1000} height={600} /></SvgContainer>;
