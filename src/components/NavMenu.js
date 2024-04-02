@@ -6,28 +6,16 @@ import { logOut, useClickOutside, trackEvent } from 'utils';
 import defaultProfileImg from 'assets/images/default-profile-img.png';
 import styled from '@emotion/styled';
 
-const LINKS = [
-  { path: '/', text: 'Home' },
-  { path: '/raspberrypi', text: 'Raspberry Pi' },
-  { path: '/camera', text: 'Camera Stream' },
-  { path: '/analytics', text: 'Analytics', whitelist: true },
-];
-
-const renderLinks = (p, isWhitelisted) => (<>
-  <hr style={{ marginTop: '.3em' }} />
-  <LinksWrapper>
-    {LINKS.map(({ path, text, whitelist }) => (!whitelist || isWhitelisted) ? (
-      <Link key={path} to={path} className={p === path ? 'disabled' : ''} >
-        {text}
-      </Link>
-    ) : null)}
-  </LinksWrapper>
-  <hr />
-</>);
-
 const NavMenu = ({ user, setUser }) => {
   const [isOpen, setIsOpen] = useState(false);
   const wrapperRef = useRef(null);
+  const location = useLocation();
+  const { pathname } = location;
+
+  useEffect(() => {
+    setIsOpen(false);
+  }, [location]);
+
   const handleClickOutside = useCallback(() => {
     if (isOpen) {
       setIsOpen(false);
@@ -35,24 +23,20 @@ const NavMenu = ({ user, setUser }) => {
     }
   }, [isOpen]);
   useClickOutside(wrapperRef, handleClickOutside);
-  const openMenu = () => {
+
+  const openMenu = useCallback(() => {
     if (!isOpen) {
       setIsOpen(true);
       trackEvent('click', 'NavMenu', 'open', 'inside');
     }
-  }
+  }, [isOpen]);
 
-  const location = useLocation();
-  const { pathname } = location;
-  useEffect(() => {
-    setIsOpen(false);
-  }, [location]);
-
-  const toggleMenu = e => {
+  const toggleMenu = useCallback(e => {
     e.stopPropagation();
     setIsOpen(v => !v);
     trackEvent('click', 'NavMenu', isOpen ? 'close' : 'open', 'inside');
-  };
+  }, [isOpen]);
+
   return (
     <TopRightDiv isOpen={isOpen} onClick={openMenu} ref={wrapperRef}>
       {user?.name ?
@@ -170,3 +154,22 @@ const LinksWrapper = styled.div`
   padding: 0.5em 0;
   margin-bottom: .5em;
 `;
+
+const LINKS = [
+  { path: '/', text: 'Home' },
+  { path: '/raspberrypi', text: 'Raspberry Pi' },
+  { path: '/camera', text: 'Camera Stream' },
+  { path: '/analytics', text: 'Analytics', whitelist: true },
+];
+
+const renderLinks = (p, isWhitelisted) => (<>
+  <hr style={{ marginTop: '.3em' }} />
+  <LinksWrapper>
+    {LINKS.map(({ path, text, whitelist }) => (!whitelist || isWhitelisted) ? (
+      <Link key={path} to={path} className={p === path ? 'disabled' : ''} >
+        {text}
+      </Link>
+    ) : null)}
+  </LinksWrapper>
+  <hr />
+</>);
