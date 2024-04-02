@@ -4,9 +4,10 @@ import PropTypes from 'prop-types';
 
 import { logOut, useClickOutside, trackEvent } from 'utils';
 import defaultProfileImg from 'assets/images/default-profile-img.png';
+import loadingSpinner from 'assets/svg/loadingSpinner.svg';
 import styled from '@emotion/styled';
 
-const NavMenu = ({ user, setUser }) => {
+const NavMenu = ({ user, setUser, isLoading }) => {
   const [isOpen, setIsOpen] = useState(false);
   const wrapperRef = useRef(null);
   const location = useLocation();
@@ -42,7 +43,7 @@ const NavMenu = ({ user, setUser }) => {
       {user?.name ?
         <>
           <div className='userMenu' onClick={toggleMenu}>
-            <img
+            <UserLogo
               alt='User Profile Image'
               src={user.picture}
               onError={e => e.target.src = defaultProfileImg}
@@ -69,7 +70,9 @@ const NavMenu = ({ user, setUser }) => {
         </>
         :
         <>
-          <button onClick={toggleMenu} style={{ cursor: 'pointer', paddingLeft: '.2em' }}>Menu</button>
+          <button onClick={toggleMenu} style={{ cursor: 'pointer', paddingLeft: '.2em' }}>
+            {isLoading && <><LoadingSpinner src={loadingSpinner} alt="loading" />{' '}</>}Menu
+          </button>
           {isOpen &&
             <>
               {renderLinks(pathname)}
@@ -86,6 +89,7 @@ const NavMenu = ({ user, setUser }) => {
 NavMenu.propTypes = {
   user: PropTypes.object,
   setUser: PropTypes.func,
+  isLoading: PropTypes.bool,
 };
 
 export default NavMenu;
@@ -129,11 +133,6 @@ const TopRightDiv = styled.div`
     font-size: 1.1em;
     white-space: nowrap;
   }
-  img {
-    border-radius: 50%;
-    padding: 0.3em 0;
-    height: 2em;
-  }
   &:hover {
     ${({ isOpen }) => isOpen ? '' : `
       background-color: var(--menu-background-hover);
@@ -147,12 +146,23 @@ const TopRightDiv = styled.div`
   }
 `;
 
+const UserLogo = styled.img`
+  border-radius: 50%;
+  padding: 0.3em 0;
+  height: 2em;
+`;
+
 const LinksWrapper = styled.div`
   display: flex;
   flex-direction: column;
   gap: 0.5em;
   padding: 0.5em 0;
   margin-bottom: .5em;
+`;
+
+const LoadingSpinner = styled.img`
+  height: 1.2em;
+  margin-bottom: -0.3em;
 `;
 
 const LINKS = [

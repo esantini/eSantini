@@ -23,10 +23,11 @@ const CHAT_ENABLED = isLocalhost;
 
 function App() {
   const [user, setUser] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
   const [webSocket, setWebSocket] = useState(null);
 
   useEffect(() => {
-    fetchUser(setUser);
+    fetchUser(setUser, setIsLoading);
 
     if (CHAT_ENABLED) {
       if (isLocalhost) {
@@ -44,7 +45,7 @@ function App() {
       <Router>
         <PageAnalytics />
         <main>
-          <NavMenu user={user} setUser={setUser} />
+          <NavMenu user={user} setUser={setUser} isLoading={isLoading} />
           <CornerLogo />
           <Switch>
             <Route exact path="/">
