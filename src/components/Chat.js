@@ -6,6 +6,7 @@ import styled from '@emotion/styled';
 function Chat({ user, ws }) {
   const [messages, setMessages] = useState([]);
   const [isOpen, setIsOpen] = useState(true);
+  const [isRequested, setIsRequested] = useState(false);
   const [name, setName] = useState('Guest');
   const [input, setInput] = useState('');
   const messagesUl = useRef(null);
@@ -51,6 +52,12 @@ function Chat({ user, ws }) {
     }
   }, [input, ws, name]);
 
+  const handleRequestChat = useCallback(() => {
+    setIsRequested(true);
+    // fetch request
+    trackEvent('click', 'Chatini', 'Request Chat');
+  }, []);
+
   return (
     <ChatContainer isOpen={isOpen}>
       <div className="chatHeader" onClick={handleHeaderClick}>
@@ -68,26 +75,36 @@ function Chat({ user, ws }) {
       {isOpen && <>
         <div className='chatMessages'>
           <h3>Work In Progress...</h3>
-          <ul ref={messagesUl}>
-            {messages.map(({ name, message, notification }, index) => notification ? (
-              <li key={index}><i>{notification}</i></li>
-            ) : (
-              <li key={index}><b>{name}:</b> {message}</li>
-            ))}
-          </ul>
+          {isRequested ?
+            <ul ref={messagesUl}>
+              {messages.map(({ name, message, notification }, index) => notification ? (
+                <li key={index}><i>{notification}</i></li>
+              ) : (
+                <li key={index}><b>{name}:</b> {message}</li>
+              ))}
+            </ul>
+            :
+            <RequestP>
+              Chat with me.<br />
+              Clicking &quot;Request Chat&quot; will notify me and I&apos;ll do my best to become available.
+            </RequestP>
+          }
         </div>
         <div className="inputWrapper">
-          <input
-            value={input}
-            placeholder="Type a message..."
-            onChange={(e) => setInput(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter') {
-                sendMessage();
-              }
-            }}
-          />
-          <SendButton isActive={!!input.trim()} onClick={sendMessage}>Send</SendButton>
+          {isRequested ? <>
+            <input
+              value={input}
+              placeholder="Type a message..."
+              onChange={(e) => setInput(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  sendMessage();
+                }
+              }}
+            />
+            <SendButton isActive={!!input.trim()} onClick={sendMessage}>Send</SendButton>
+          </>
+            : <RequestButton onClick={handleRequestChat}>Request Chat</RequestButton>}
         </div>
       </>}
     </ChatContainer>
@@ -184,6 +201,28 @@ const ChatContainer = styled.div`
       border: 0;
     }
   }
+`;
+
+const RequestP = styled.p`
+  padding: 1em;
+  margin: 0;
+  color: #888;
+`;
+const RequestButton = styled.button`
+  width: 100%;
+  font-size: 1em;
+  font-weight: bold;
+  background: none;
+  height: 2em;
+  border-radius: 0.6em;
+  color: #008506;
+  cursor: pointer;
+  background: #e0ebe1;
+  &:hover {
+    color: #005203;
+    background: #cce6cf;
+  }
+
 `;
 
 const SendButton = styled.button`
