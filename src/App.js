@@ -65,7 +65,7 @@ function App() {
           </Switch>
         </main>
         <div id="toasty">
-          <img alt="Konami Code" src={toasty} />
+          <img alt="Konami Code" src={toasty} loading="lazy" />
         </div>
       </Router>
       {CHAT_ENABLED &&

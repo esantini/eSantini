@@ -20,6 +20,7 @@ const Analytics = ({ user }) => {
   const [sessions, setSessions] = useState([]);
   const [selectedSession, setSelectedSession] = useState({});
   const [toDeleteId, setToDeleteId] = useState(-1);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     document.title = 'Analytics - eSantini';
@@ -28,6 +29,7 @@ const Analytics = ({ user }) => {
       sessions.reverse(); // Show most recent first
       setSessions(sessions);
       setPoints(sessions.map(s => s.geo?.ll));
+      setIsLoading(false);
     });
   }, []);
 
@@ -46,7 +48,7 @@ const Analytics = ({ user }) => {
     <div>
       <h1>Analytics</h1>
       <p>Explore the world of visitors in the past 7 days.</p>
-      <WorldMap points={points} selectedPoint={selectedSession?.geo?.ll} />
+      <WorldMap points={points} selectedPoint={selectedSession?.geo?.ll} isLoading={isLoading} />
       <p>
         Each dot represents a visitor&apos;s session over the last 7 days. Rest assured, I prioritize
         your privacy - only general locations are stored and displayed, with no specific IPs saved.
@@ -139,7 +141,4 @@ const Table = styled.table`
     right: .5em;
     cursor: pointer;
   }
-`;
-
-const SessionRow = styled.tr`
 `;

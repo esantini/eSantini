@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 
 import { logOut, useClickOutside, trackEvent } from 'utils';
 import defaultProfileImg from 'assets/images/default-profile-img.png';
-import loadingSpinner from 'assets/svg/loadingSpinner.svg';
 import styled from '@emotion/styled';
 
 const NavMenu = ({ user, setUser, isLoading }) => {
@@ -71,7 +70,12 @@ const NavMenu = ({ user, setUser, isLoading }) => {
         :
         <>
           <button onClick={toggleMenu} style={{ cursor: 'pointer', paddingLeft: '.2em' }}>
-            {isLoading && <><LoadingSpinner src={loadingSpinner} alt="loading" />{' '}</>}Menu
+            {isLoading && <>
+              <LoadingSpinner
+                src={`${process.env.PUBLIC_URL}/loadingSpinner.svg`}
+                alt='Loading...'
+              />{' '}
+            </>}Menu
           </button>
           {isOpen &&
             <>

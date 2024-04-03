@@ -20,7 +20,7 @@ const projection = d3.geoMercator().scale(150).translate([1000 / 2, 600 / 2]);
 const countries = feature(countriesJson, countriesJson.objects.countries).features;
 const usStates = feature(usStatesJson, usStatesJson.objects.states).features;
 
-const WorldMap = ({ points = [], selectedPoint }) => {
+const WorldMap = ({ points = [], selectedPoint, isLoading }) => {
   const [currentZoom, setCurrentZoom] = useState(1);
   const ref = useRef();
   const svgRef = useRef();
@@ -150,17 +150,30 @@ const WorldMap = ({ points = [], selectedPoint }) => {
     }
   };
 
-  return <SvgContainer><svg ref={ref} width={1000} height={600} /></SvgContainer>;
+  return (
+    <SvgContainer isLoading={isLoading}>
+      <svg ref={ref} width={1000} height={600} />
+      {isLoading &&
+        <img
+          src={`${process.env.PUBLIC_URL}/loadingSpinner.svg`}
+          alt='Loading...'
+          className='spinner'
+        />
+      }
+    </SvgContainer>
+  );
 };
 
 WorldMap.propTypes = {
   points: PropTypes.array,
   selectedPoint: PropTypes.array,
+  isLoading: PropTypes.bool,
 };
 
 export default WorldMap;
 
 const SvgContainer = styled.div`
+  position: relative;
   max-width: 1000px;
   border: 1px solid black;
   background: powderblue;
@@ -168,6 +181,29 @@ const SvgContainer = styled.div`
   max-height: 60vh;
   border-radius: 0.5em;
   box-shadow: 0.1em 0.1em 0.3em gray;
+
+  ${({ isLoading }) => isLoading && `
+    .spinner {
+      position: absolute;
+      height: 3em;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);      
+      z-index: 2;
+    }
+    &:after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      max-height: 60vh;
+      max-width: 1000px;
+      background-color: black;
+      opacity: 0.5;
+    }
+  `}
 
   @media (max-width: 1100px) {
     max-width: 95vw;
