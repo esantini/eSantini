@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import WorldMap from 'components/analytics/WorldMap';
 import ConfirmationModal from 'components/ConfirmationModal';
 import styled from '@emotion/styled';
-import { fetchSessions } from 'utils';
+import { fetchSessions, deleteSession } from 'utils';
 
 const dateOptions = {
   year: 'numeric', month: 'short', day: 'numeric',
@@ -12,7 +12,12 @@ const dateOptions = {
 };
 const getFormattedDate = (dateString) => {
   const date = new Date(dateString);
-  return new Intl.DateTimeFormat('en-US', dateOptions).format(date);
+  try {
+    return new Intl.DateTimeFormat('en-US', dateOptions).format(date);
+  } catch (e) {
+    console.error(e.message);
+    return 'Invalid Date';
+  }
 }
 
 const Analytics = ({ user }) => {
@@ -33,13 +38,17 @@ const Analytics = ({ user }) => {
     });
   }, []);
 
-  const deleteSession = useCallback(() => {
-    fetch(`api/sessions?id=${toDeleteId}`, { method: 'DELETE' })
-      .then((res) => {
-        if (!res.ok) throw new Error('Failed to delete session');
-        else {
-          setSessions(sessions.filter(s => s.$loki !== toDeleteId));
-        }
+  const handleDeleteSession = useCallback(() => {
+    deleteSession(toDeleteId, ({ data }) => {
+      if (data.deleteSession) {
+        setSessions(sessions.filter(s => s.id !== toDeleteId));
+      }
+      else {
+        throw new Error('Failed to delete session');
+      }
+    })
+      .catch(console.error)
+      .finally(() => {
         setToDeleteId(-1);
       });
   }, [toDeleteId]);
@@ -77,8 +86,8 @@ const Analytics = ({ user }) => {
                   }
                   <Table>
                     <tbody>
-                      {s.events?.map(e => (
-                        <tr key={e.$loki}>
+                      {s.events?.map((e, i) => (
+                        <tr key={i}>
                           <td>{e.type}</td>
                           {e.type === 'page_view' ? <td colSpan={3}>{e.details.page_path}</td> : (
                             <>
@@ -101,7 +110,7 @@ const Analytics = ({ user }) => {
       <ConfirmationModal
         isOpen={toDeleteId > -1}
         onCancel={() => setToDeleteId(-1)}
-        onConfirm={deleteSession}
+        onConfirm={handleDeleteSession}
       />
     </div>
   );

@@ -69,4 +69,26 @@ const fetchSessions = (callback) => {
     .catch(console.error);
 }
 
-export { fetchUser, fetchData, fetchSessions };
+const deleteSession = (sessionId, callback) => (
+  fetch('graphql', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+    },
+    body: JSON.stringify({
+      query: `
+        mutation DeleteSession($sessionId: Int!) {
+          deleteSession(sessionId: $sessionId)
+        }
+      `,
+      variables: {
+        sessionId: sessionId,
+      },
+    }),
+  })
+    .then(response => response.json())
+    .then(callback)
+);
+
+export { fetchUser, fetchData, fetchSessions, deleteSession };
