@@ -27,4 +27,46 @@ const fetchData = (endpoint, callback) => {
     .catch(console.error);
 }
 
-export { fetchUser, fetchData };
+const fetchSessions = (callback) => {
+  fetch('graphql', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+    },
+    body: JSON.stringify({
+      query: `
+        query GetSessions($daysAgo: Int) {
+          sessions(daysAgo: $daysAgo) {
+            id
+            timestamp
+            geo {
+              city
+              region
+              country
+              ll
+            }
+            events {
+              type
+              details {
+                page_path
+                event_category
+                event_label
+                value
+              }
+              timestamp
+            }
+          }
+        }
+      `,
+      variables: {
+        daysAgo: 7, // Adjust this value as needed
+      },
+    }),
+  })
+    .then(response => response.json())
+    .then(callback)
+    .catch(console.error);
+}
+
+export { fetchUser, fetchData, fetchSessions };

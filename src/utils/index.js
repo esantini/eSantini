@@ -1,4 +1,4 @@
-import { fetchUser, fetchData } from './apiUtils';
+import { fetchUser, fetchData, fetchSessions } from './apiUtils';
 import useClickOutside from './useClickOutside';
 import { logOut } from './authUtils';
 import { setLight, getLight } from './lightControls';
@@ -11,6 +11,7 @@ export {
   getLight,
   fetchUser,
   fetchData,
+  fetchSessions,
   getWeather,
   setMessage,
   useClickOutside,

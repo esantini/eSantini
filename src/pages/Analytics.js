@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import WorldMap from 'components/analytics/WorldMap';
 import ConfirmationModal from 'components/ConfirmationModal';
 import styled from '@emotion/styled';
-import { fetchData } from 'utils';
+import { fetchSessions } from 'utils';
 
 const dateOptions = {
   year: 'numeric', month: 'short', day: 'numeric',
@@ -18,17 +18,16 @@ const getFormattedDate = (dateString) => {
 const Analytics = ({ user }) => {
   const [points, setPoints] = useState([]);
   const [sessions, setSessions] = useState([]);
-  const [events, setEvents] = useState([]);
   const [selectedSession, setSelectedSession] = useState({});
   const [toDeleteId, setToDeleteId] = useState(-1);
 
   useEffect(() => {
     document.title = 'Analytics - eSantini';
-    fetchData('api/worldpoints', setPoints);
-    fetchData('api/event', setEvents);
-    fetchData('api/sessions', (data) => {
-      data.reverse(); // Show most recent first
-      setSessions(data);
+    fetchSessions(({ data }) => {
+      const { sessions } = data;
+      sessions.reverse(); // Show most recent first
+      setSessions(sessions);
+      setPoints(sessions.map(s => s.geo?.ll));
     });
   }, []);
 
@@ -56,27 +55,27 @@ const Analytics = ({ user }) => {
         <h2>Recent Sessions</h2>
         <Table className='sessionsTable'>
           <tbody>
-            {sessions.map(s => (<Fragment key={s.$loki}>
+            {sessions.map(s => (<Fragment key={s.id}>
               <tr
-                onClick={() => setSelectedSession(({ $loki }) => s.$loki === $loki ? {} : s)}
-                className={`sessionRow${selectedSession.$loki === s.$loki ? ' isSelected' : ''}`}
+                onClick={() => setSelectedSession(({ id }) => s.id === id ? {} : s)}
+                className={`sessionRow${selectedSession.id === s.id ? ' isSelected' : ''}`}
               >
                 <td>{s.geo?.city}, {s.geo?.region}, {s.geo?.country}</td>
                 <td>{s.geo?.ll[0]}, {s.geo?.ll[1]}</td>
                 <td>{getFormattedDate(s.timestamp)}</td>
               </tr>
-              {s.$loki === selectedSession.$loki && (<tr>
+              {s.id === selectedSession.id && (<tr>
                 <td colSpan={3} className='sessionDetails'>
                   <h3>Events</h3>
                   {user?.isAdmin &&
                     <button
                       className="btnDeleteSession"
-                      onClick={() => setToDeleteId(s.$loki)}
+                      onClick={() => setToDeleteId(s.id)}
                     >&#128465;</button>
                   }
                   <Table>
                     <tbody>
-                      {events?.filter(e => e.sessionId === selectedSession.$loki).map(e => (
+                      {s.events?.map(e => (
                         <tr key={e.$loki}>
                           <td>{e.type}</td>
                           {e.type === 'page_view' ? <td colSpan={3}>{e.details.page_path}</td> : (
