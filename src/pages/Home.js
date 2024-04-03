@@ -31,7 +31,7 @@ const Home = ({ user }) => {
           into simple, elegant solutions. This site is my <strong className='highlight'>sandbox</strong>,
           where I experiment, innovate, and occasionally break things (for science, of course!).
         </Desc>
-        <Desc>
+        <Desc style={{ display: 'none' }}>
           Dive into my world by exploring my latest projects below, or take a closer look under the hood on
           my <ExternalLink href='https://github.com/esantini' className='highlight'>GitHub</ExternalLink> profile.
           Feel free to connect with me
