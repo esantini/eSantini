@@ -33,7 +33,7 @@ const Analytics = ({ user }) => {
       const { sessions } = data;
       sessions.reverse(); // Show most recent first
       setSessions(sessions);
-      setPoints(sessions.map(s => s.geo?.ll));
+      setPoints(sessions.map(s => s.geo?.ll || []));
       setIsLoading(false);
     });
   }, []);
