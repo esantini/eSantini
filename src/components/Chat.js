@@ -5,7 +5,7 @@ import styled from '@emotion/styled';
 
 function Chat({ user, ws }) {
   const [messages, setMessages] = useState([]);
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
   const [isRequested, setIsRequested] = useState(false);
   const [name, setName] = useState('Guest');
   const [input, setInput] = useState('');
