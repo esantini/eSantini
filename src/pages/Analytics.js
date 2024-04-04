@@ -3,22 +3,7 @@ import PropTypes from 'prop-types';
 import WorldMap from 'components/analytics/WorldMap';
 import ConfirmationModal from 'components/ConfirmationModal';
 import styled from '@emotion/styled';
-import { fetchSessions, deleteSession } from 'utils';
-
-const dateOptions = {
-  year: 'numeric', month: 'short', day: 'numeric',
-  hour: '2-digit', minute: '2-digit', second: '2-digit',
-  hour12: true
-};
-const getFormattedDate = (dateString) => {
-  const date = new Date(dateString);
-  try {
-    return new Intl.DateTimeFormat('en-US', dateOptions).format(date);
-  } catch (e) {
-    console.error(e.message);
-    return 'Invalid Date';
-  }
-}
+import { fetchSessions, deleteSession, getFormattedDate } from 'utils';
 
 const Analytics = ({ user }) => {
   const [points, setPoints] = useState([]);
