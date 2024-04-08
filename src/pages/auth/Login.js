@@ -1,32 +1,39 @@
+import { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import GoogleLoginButton from './GoogleLoginButton';
 import { logOut } from 'utils';
 import styled from '@emotion/styled';
 import defaultProfileImg from 'assets/images/default-profile-img.png';
 
-const Login = ({ user, setUser }) => (<>
-  <h1>Log In</h1>
-  {user?.name ?
-    <LoggedInDiv>
-      Hello {user.name}
-      <br />
-      <img
-        alt="User Profile Image"
-        className="userImage"
-        src={user.picture}
-        onError={e => e.target.src = defaultProfileImg}
-      />
-      <br />
-      <button onClick={() => logOut(setUser)} >Log out</button>
-    </LoggedInDiv>
-    :
-    <>
-      <P>
-        Unless you&apos;re me, there&apos;s nothing to gain by logging in, but you can still explore!
-      </P>
-      <GoogleLoginButton setUser={setUser} />
-    </>}
-</>);
+const Login = ({ user, setUser }) => {
+  useEffect(() => {
+    document.title = 'Login - eSantini';
+  }, []);
+
+  return <>
+    <h1>Log In</h1>
+    {user?.name ?
+      <LoggedInDiv>
+        Hello {user.name}
+        <br />
+        <img
+          alt="User Profile Image"
+          className="userImage"
+          src={user.picture}
+          onError={e => e.target.src = defaultProfileImg}
+        />
+        <br />
+        <button onClick={() => logOut(setUser)} >Log out</button>
+      </LoggedInDiv>
+      :
+      <>
+        <P>
+          Unless you&apos;re me, there&apos;s nothing to gain by logging in, but you can still explore!
+        </P>
+        <GoogleLoginButton setUser={setUser} />
+      </>}
+  </>;
+};
 
 Login.propTypes = {
   user: PropTypes.object,
