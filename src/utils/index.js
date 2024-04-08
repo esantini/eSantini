@@ -1,4 +1,4 @@
-import { fetchUser, fetchData, fetchSessions, deleteSession } from './apiUtils';
+import { fetchUser, fetchData, fetchSessions, deleteSession, requestChat } from './apiUtils';
 import { logOut } from './authUtils';
 import { setLight, getLight } from './lightControls';
 import { getWeather, setMessage, getCurrentMessage } from './miscApiCalls';
@@ -13,6 +13,7 @@ export {
   fetchData,
   fetchSessions,
   deleteSession,
+  requestChat,
   getWeather,
   setMessage,
   useClickOutside,

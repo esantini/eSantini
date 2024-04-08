@@ -91,4 +91,29 @@ const deleteSession = (sessionId, callback) => (
     .then(callback)
 );
 
-export { fetchUser, fetchData, fetchSessions, deleteSession };
+const requestChat = (name, callback) => (
+  fetch('graphql', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+    },
+    body: JSON.stringify({
+      query: `
+        query RequestChat($name: String!) {
+          requestChat(name: $name) {
+            name
+            message
+          }
+        }
+      `,
+      variables: {
+        name: name,
+      },
+    }),
+  })
+    .then(response => response.json())
+    .then(callback)
+);
+
+export { fetchUser, fetchData, fetchSessions, deleteSession, requestChat };

@@ -1,12 +1,13 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import PropTypes from 'prop-types';
-import { trackEvent } from 'utils';
+import { trackEvent, requestChat } from 'utils';
 import styled from '@emotion/styled';
 
 function Chat({ user, ws }) {
   const [messages, setMessages] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
   const [isRequested, setIsRequested] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [name, setName] = useState('Guest');
   const [input, setInput] = useState('');
   const messagesUl = useRef(null);
@@ -20,10 +21,10 @@ function Chat({ user, ws }) {
 
   useEffect(() => {
     if (ws) {
-      ws.onopen = () => setMessages((prevMessages) => [...prevMessages, { notification: 'Connected.' }]);
-      ws.onclose = () => setMessages((prevMessages) => [...prevMessages, { notification: 'Disconnected.' }]);
+      ws.onopen = () => pushMessage({ notification: 'Connected.' });
+      ws.onclose = () => pushMessage({ notification: 'Disconnected.' });
       ws.onerror = (error) => console.error('WebSocket error:', error);
-      ws.onmessage = (event) => setMessages((prevMessages) => [...prevMessages, JSON.parse(event.data)]);
+      ws.onmessage = (event) => pushMessage(JSON.parse(event.data));
       return () => {
         ws.close();
       };
@@ -41,6 +42,10 @@ function Chat({ user, ws }) {
     trackEvent('click', 'Chatini', 'Header', isOpen ? 'Close' : 'Open');
   }, [isOpen]);
 
+  const pushMessage = useCallback((message) => {
+    setMessages((prevMessages) => [...prevMessages, message]);
+  }, []);
+
   const sendMessage = useCallback(() => {
     const newMessage = input.trim();
     if (!newMessage) return;
@@ -48,18 +53,30 @@ function Chat({ user, ws }) {
       ws.send(JSON.stringify({ name, message: newMessage }));
       setInput('');
     } else {
-      setMessages((prevMessages) => [...prevMessages, { notification: 'Cant send message.' }]);
+      pushMessage({ notification: 'Cant send message.' });
     }
   }, [input, ws, name]);
 
   const handleRequestChat = useCallback(() => {
-    setIsRequested(true);
-    // fetch request
+    setIsLoading(true);
+    requestChat(name, ({ errors, ...d }) => {
+      console.log({ d, errors });
+      if (errors && errors.length) {
+        throw new Error(errors);
+      }
+      setIsRequested(true);
+    }).catch((errors) => {
+      for (let err of errors) {
+        console.error('Failed to request chat:', err);
+      }
+    }).finally(() => {
+      setIsLoading(false);
+    });
     trackEvent('click', 'Chatini', 'Request Chat');
   }, []);
 
   return (
-    <ChatContainer isOpen={isOpen}>
+    <ChatContainer isOpen={isOpen} isLoading={isLoading}>
       <div className="chatHeader" onClick={handleHeaderClick}>
         <h2>Chatini</h2>
         {!user?.name &&
@@ -89,6 +106,11 @@ function Chat({ user, ws }) {
               Clicking &quot;Request Chat&quot; will notify me and I&apos;ll do my best to become available.
             </RequestP>
           }
+          <img
+            src={`${process.env.PUBLIC_URL}/loadingSpinner.svg`}
+            alt='Loading...'
+            className='spinner'
+          />
         </div>
         <div className="inputWrapper">
           {isRequested ? <>
@@ -174,6 +196,33 @@ const ChatContainer = styled.div`
       padding: 0 1em;
       border-bottom: 1px solid #cdd2cd;
     }
+    
+    .spinner {
+      display: none;
+    }
+    ${({ isLoading }) => isLoading && `
+      .spinner {
+        position: absolute;
+        display: block;
+        height: 3em;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);      
+        z-index: 2;
+      }
+      &:after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        max-height: 60vh;
+        max-width: 1000px;
+        background-color: black;
+        opacity: 0.5;
+      }
+    `}
   }
   .inputWrapper {
     position: absolute;
@@ -186,9 +235,10 @@ const ChatContainer = styled.div`
     input {
       width: 80%;
       padding: .5em;
+      font-size: 0.9em;
       padding-left: 1em;
       border-radius: 1.1em;
-      height: 2.8em;
+      height: 1.6em;
       &:focus {
         outline: none;
         background: #fdf9d6;
