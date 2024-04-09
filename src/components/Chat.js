@@ -4,7 +4,7 @@ import { trackEvent, requestChat, fetchChatMessages } from 'utils';
 import ChatConversations from './ChatConversations';
 import styled from '@emotion/styled';
 
-const getWebSocketUrl = (localIp) => isLocalhost ? `ws://${localIp}:8080` : 'wss://esantini.com:8080';
+const getWebSocketUrl = (localIp) => isLocalhost ? `ws://${localIp}:8080/chatsocket` : 'wss://esantini.com:8080/chatsocket';
 
 function Chat({ user }) {
   const [webSocket, setWebSocket] = useState(null);
