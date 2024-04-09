@@ -5,7 +5,6 @@ import ChatConversations from './ChatConversations';
 import styled from '@emotion/styled';
 
 const getWebSocketUrl = (localIp) => isLocalhost ? `ws://${localIp}:8080` : 'wss://esantini.com:8080';
-const CHAT_ENABLED = isLocalhost;
 
 function Chat({ user }) {
   const [webSocket, setWebSocket] = useState(null);
@@ -125,7 +124,7 @@ function Chat({ user }) {
     trackEvent('click', 'Chatini', 'Request Chat');
   }, []);
 
-  return (<>
+  return (user?.isAdmin ? <>
     <ChatContainer isOpen={isOpen} isLoading={isLoading} isAdmin={user?.isAdmin}>
       {user?.isAdmin && isOpen &&
         <ChatConversations selectedId={adminChatId} setChatId={setAdminChatId} />
@@ -186,7 +185,7 @@ function Chat({ user }) {
         </>}
       </div>
     </ChatContainer>
-  </>);
+  </> : null);
 }
 
 Chat.propTypes = {
@@ -202,7 +201,7 @@ const ChatContainer = styled.div`
   height: ${({ isOpen }) => isOpen ? '15' : '2'}em;
   max-height: 15em;
 
-  display: ${CHAT_ENABLED ? 'flex' : 'none'};
+  display: flex;
   flex-direction: row;
 
   background-color: white;
