@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import PropTypes from 'prop-types';
-import { trackEvent, requestChat } from 'utils';
+import { trackEvent, requestChat, fetchChatMessages } from 'utils';
+import ChatConversations from './ChatConversations';
 import styled from '@emotion/styled';
 
 const getWebSocketUrl = (localIp) => isLocalhost ? `ws://${localIp}:8080` : 'wss://esantini.com:8080';
@@ -8,25 +9,15 @@ const CHAT_ENABLED = isLocalhost;
 
 function Chat({ user }) {
   const [webSocket, setWebSocket] = useState(null);
+  const [isConnected, setIsConnected] = useState(false);
   const [messages, setMessages] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
+  const [adminChatId, setAdminChatId] = useState(null);
   const [isRequested, setIsRequested] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [name, setName] = useState('Guest');
   const [input, setInput] = useState('');
   const messagesUl = useRef(null);
-
-  useEffect(() => {
-    if (CHAT_ENABLED && isRequested && !webSocket) {
-      if (isLocalhost) {
-        fetch('api/localIp').then(r => r.json()).then(({ localIp }) => {
-          setWebSocket(new WebSocket(getWebSocketUrl(localIp)));
-        });
-      } else {
-        setWebSocket(new WebSocket(getWebSocketUrl()));
-      }
-    }
-  }, [isRequested]);
 
   useEffect(() => {
     if (user?.name) {
@@ -37,10 +28,13 @@ function Chat({ user }) {
 
   useEffect(() => {
     if (webSocket) {
-      webSocket.onopen = () => pushMessage({ notification: 'Connected.' });
+      webSocket.onopen = () => {
+        setIsConnected(true);
+        pushMessage({ notification: 'Connected.' });
+      };
       webSocket.onclose = () => {
         setWebSocket(null);
-        // TODO setIsRequested(false);
+        setIsConnected(false);
         pushMessage({ notification: 'Disconnected.' });
       };
       webSocket.onerror = (error) => console.error('WebSocket error:', error);
@@ -56,6 +50,38 @@ function Chat({ user }) {
       messagesUl.current.scrollTop = messagesUl.current.scrollHeight;
     }
   }, [messages]);
+
+  useEffect(() => {
+    if (adminChatId) {
+      if (webSocket) {
+        webSocket.close();
+      }
+      setIsLoading(true);
+      fetchChatMessages(adminChatId, ({ data, errors }) => {
+        if (errors && errors.length) {
+          throw new Error(errors);
+        }
+        const resData = data.chatMessages;
+        setMessages(resData.reverse());
+        setIsRequested(true);
+        connectWebSocket();
+        setIsLoading(false);
+      });
+    }
+  }, [adminChatId]);
+
+  const connectWebSocket = useCallback(() => {
+    if (webSocket) {
+      webSocket.close();
+    }
+    if (isLocalhost) {
+      fetch('api/localIp').then(r => r.json()).then(({ localIp }) => {
+        setWebSocket(new WebSocket(getWebSocketUrl(localIp)));
+      });
+    } else {
+      setWebSocket(new WebSocket(getWebSocketUrl()));
+    }
+  }, [webSocket]);
 
   const handleHeaderClick = useCallback(() => {
     setIsOpen(v => !v);
@@ -88,6 +114,7 @@ function Chat({ user }) {
       const oldMessages = resData && resData.length ? resData.reverse() : [];
       setMessages(msgs => oldMessages.concat(msgs));
       setIsRequested(true);
+      connectWebSocket();
     }).catch((errors) => {
       for (let err of errors) {
         console.error('Failed to request chat:', err);
@@ -98,62 +125,68 @@ function Chat({ user }) {
     trackEvent('click', 'Chatini', 'Request Chat');
   }, []);
 
-  return (
-    <ChatContainer isOpen={isOpen} isLoading={isLoading}>
-      <div className="chatHeader" onClick={handleHeaderClick}>
-        <h2>Chatini</h2>
-        {!user?.name &&
-          <input
-            type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            onClick={(e) => e.stopPropagation()}
-          />
-        }
-        <hr />
-      </div>
-      {isOpen && <>
-        <div className='chatMessages'>
-          <h3>Work In Progress...</h3>
-          {isRequested ?
-            <ul ref={messagesUl}>
-              {messages.map(({ name, message, notification }, index) => notification ? (
-                <li key={index}><i>{notification}</i></li>
-              ) : (
-                <li key={index}><b>{name}:</b> {message}</li>
-              ))}
-            </ul>
-            :
-            <RequestP>
-              Chat with me.<br />
-              Clicking &quot;Request Chat&quot; will notify me and I&apos;ll do my best to become available.
-            </RequestP>
-          }
+  return (<>
+    <ChatContainer isOpen={isOpen} isLoading={isLoading} isAdmin={user?.isAdmin}>
+      {user?.isAdmin && isOpen &&
+        <ChatConversations selectedId={adminChatId} setChatId={setAdminChatId} />
+      }
+      <div className="chatWrapper">
+        <div className="chatHeader" onClick={handleHeaderClick}>
+          <h2>Chatini</h2>
           <img
             src={`${process.env.PUBLIC_URL}/loadingSpinner.svg`}
             alt='Loading...'
             className='spinner'
           />
-        </div>
-        <div className="inputWrapper">
-          {isRequested ? <>
+          {!user?.name &&
             <input
-              value={input}
-              placeholder="Type a message..."
-              onChange={(e) => setInput(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter') {
-                  sendMessage();
-                }
-              }}
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              onClick={(e) => e.stopPropagation()}
             />
-            <SendButton isActive={!!input.trim()} onClick={sendMessage}>Send</SendButton>
-          </>
-            : <RequestButton onClick={handleRequestChat}>Request Chat</RequestButton>}
+          }
+          <hr />
         </div>
-      </>}
+        {isOpen && <>
+          <div className='chatMessages'>
+            <h3>Work In Progress...</h3>
+            {isRequested || user?.isAdmin ?
+              <ul ref={messagesUl}>
+                {messages.map(({ name, message, notification }, index) => notification ? (
+                  <li key={index}><i>{notification}</i></li>
+                ) : (
+                  <li key={index}><b>{name}:</b> {message}</li>
+                ))}
+              </ul>
+              :
+              <RequestP>
+                Chat with me.<br />
+                Clicking &quot;Request Chat&quot; will notify me and I&apos;ll do my best to become available.
+              </RequestP>
+            }
+          </div>
+          <div className="inputWrapper">
+            {isRequested || user?.isAdmin ? <>
+              <input
+                value={input}
+                disabled={!isConnected}
+                placeholder="Type a message..."
+                onChange={(e) => setInput(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    sendMessage();
+                  }
+                }}
+              />
+              <SendButton isActive={!!input.trim() && isConnected} onClick={sendMessage}>Send</SendButton>
+            </>
+              : <RequestButton onClick={handleRequestChat}>Request Chat</RequestButton>}
+          </div>
+        </>}
+      </div>
     </ChatContainer>
-  );
+  </>);
 }
 
 Chat.propTypes = {
@@ -166,14 +199,11 @@ const ChatContainer = styled.div`
   position: fixed;
   bottom: 0;
   right: 0;
-  width: 15.2em;
   height: ${({ isOpen }) => isOpen ? '15' : '2'}em;
   max-height: 15em;
-  overflow: hidden;
 
   display: ${CHAT_ENABLED ? 'flex' : 'none'};
-  flex-direction: column;
-  justify-content: space-between;
+  flex-direction: row;
 
   background-color: white;
   border-left: 2px solid #888;
@@ -182,6 +212,15 @@ const ChatContainer = styled.div`
   box-shadow: ${({ isOpen }) => isOpen ? '0em 0em .5em gray' : '0'};
   
   transition: height 0.15s ease, box-shadow 0.5s ease;
+
+  .chatWrapper {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 15.2em;
+    overflow: hidden;
+  }
 
   .chatHeader {
     cursor: pointer;
@@ -218,34 +257,6 @@ const ChatContainer = styled.div`
       padding: 0 1em;
       border-bottom: 1px solid #cdd2cd;
     }
-    
-    .spinner {
-      display: none;
-    }
-    ${({ isLoading }) => isLoading && `
-      .spinner {
-        position: absolute;
-        display: block;
-        height: 3em;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);      
-        z-index: 2;
-      }
-      &:after {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        max-height: 60vh;
-        max-width: 1000px;
-        background-color: black;
-        opacity: 0.5;
-        z-index: 1;
-      }
-    `}
   }
   .inputWrapper {
     position: absolute;
@@ -274,6 +285,17 @@ const ChatContainer = styled.div`
       border: 0;
     }
   }
+
+  .spinner {
+    display: none;
+    height: 1.6em;
+    margin-bottom: -0.3em;
+  }
+  ${({ isLoading }) => isLoading && `
+    .spinner {
+      display: inline-block;
+    }
+  `}
 `;
 
 const RequestP = styled.p`

@@ -116,4 +116,84 @@ const requestChat = (name, callback) => (
     .then(callback)
 );
 
-export { fetchUser, fetchData, fetchSessions, deleteSession, requestChat };
+const fetchConversations = (callback) => {
+  fetch('graphql', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+    },
+    body: JSON.stringify({
+      query: `
+        query GetConversations {
+          conversations {
+            chatId
+          }
+        }
+      `,
+    }),
+  })
+    .then(response => response.json())
+    .then(callback)
+    .catch(console.error);
+}
+
+const fetchChatMessages = (chatId, callback) => {
+  fetch('graphql', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+    },
+    body: JSON.stringify({
+      query: `
+        query GetChatMessages($chatId: Int!) {
+          chatMessages(chatId: $chatId) {
+            name
+            message
+          }
+        }
+      `,
+      variables: {
+        chatId: chatId,
+      },
+    }),
+  })
+    .then(response => response.json())
+    .then(callback)
+    .catch(console.error);
+}
+
+const setChatId = (chatId, callback) => {
+  fetch('graphql', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+    },
+    body: JSON.stringify({
+      query: `
+        mutation SetChatId($chatId: Int!) {
+          setChatId(chatId: $chatId)
+        }
+      `,
+      variables: {
+        chatId: chatId,
+      },
+    }),
+  })
+    .then(response => response.json())
+    .then(callback)
+    .catch(console.error);
+}
+
+export {
+  fetchUser,
+  fetchData,
+  fetchSessions,
+  deleteSession,
+  requestChat,
+  fetchConversations,
+  fetchChatMessages,
+  setChatId,
+};
