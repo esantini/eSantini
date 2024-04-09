@@ -4,18 +4,18 @@ import { trackEvent, requestChat, fetchChatMessages } from 'utils';
 import ChatConversations from './ChatConversations';
 import styled from '@emotion/styled';
 
-const getWebSocketUrl = (localIp) => isLocalhost ? `ws://${localIp}:8080/chatsocket` : 'wss://esantini.com:8080/chatsocket';
+const getWebSocketUrl = (localIp) => isLocalhost ? `ws://${localIp}:8080/chatsocket` : 'wss://esantini.com/chatsocket';
 
 function Chat({ user }) {
-  const [webSocket, setWebSocket] = useState(null);
-  const [isConnected, setIsConnected] = useState(false);
-  const [messages, setMessages] = useState([]);
-  const [isOpen, setIsOpen] = useState(false);
-  const [adminChatId, setAdminChatId] = useState(null);
-  const [isRequested, setIsRequested] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [name, setName] = useState('Guest');
   const [input, setInput] = useState('');
+  const [name, setName] = useState('Guest');
+  const [isOpen, setIsOpen] = useState(false);
+  const [messages, setMessages] = useState([]);
+  const [webSocket, setWebSocket] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [adminChatId, setAdminChatId] = useState(null);
+  const [isConnected, setIsConnected] = useState(false);
+  const [isRequested, setIsRequested] = useState(false);
   const messagesUl = useRef(null);
 
   useEffect(() => {
@@ -29,16 +29,16 @@ function Chat({ user }) {
     if (webSocket) {
       webSocket.onopen = () => {
         setIsConnected(true);
-        pushMessage({ notification: 'Connected.' });
+        // pushMessage({ notification: 'Connected.' });
       };
       webSocket.onclose = () => {
-        setWebSocket(null);
         setIsConnected(false);
-        pushMessage({ notification: 'Disconnected.' });
+        // pushMessage({ notification: 'Disconnected.' });
       };
       webSocket.onerror = (error) => console.error('WebSocket error:', error);
       webSocket.onmessage = (event) => pushMessage(JSON.parse(event.data));
       return () => {
+        setIsConnected(false);
         webSocket.close();
       };
     }
@@ -54,6 +54,7 @@ function Chat({ user }) {
     if (adminChatId) {
       if (webSocket) {
         webSocket.close();
+        setWebSocket(null);
       }
       setIsLoading(true);
       fetchChatMessages(adminChatId, ({ data, errors }) => {
@@ -63,16 +64,12 @@ function Chat({ user }) {
         const resData = data.chatMessages;
         setMessages(resData.reverse());
         setIsRequested(true);
-        connectWebSocket();
         setIsLoading(false);
       });
     }
   }, [adminChatId]);
 
   const connectWebSocket = useCallback(() => {
-    if (webSocket) {
-      webSocket.close();
-    }
     if (isLocalhost) {
       fetch('api/localIp').then(r => r.json()).then(({ localIp }) => {
         setWebSocket(new WebSocket(getWebSocketUrl(localIp)));
@@ -80,7 +77,13 @@ function Chat({ user }) {
     } else {
       setWebSocket(new WebSocket(getWebSocketUrl()));
     }
-  }, [webSocket]);
+  }, []);
+
+  useEffect(() => {
+    if (isRequested && !isConnected) {
+      connectWebSocket();
+    }
+  }, [isRequested, isConnected, connectWebSocket]);
 
   const handleHeaderClick = useCallback(() => {
     setIsOpen(v => !v);
@@ -124,7 +127,7 @@ function Chat({ user }) {
     trackEvent('click', 'Chatini', 'Request Chat');
   }, []);
 
-  return (user?.isAdmin ? <>
+  return (<>
     <ChatContainer isOpen={isOpen} isLoading={isLoading} isAdmin={user?.isAdmin}>
       {user?.isAdmin && isOpen &&
         <ChatConversations selectedId={adminChatId} setChatId={setAdminChatId} />
@@ -145,6 +148,7 @@ function Chat({ user }) {
               onClick={(e) => e.stopPropagation()}
             />
           }
+          <StatusCircle isConnected={isConnected} data-tooltip={isConnected ? 'Connected' : 'Not Connected'} />
           <hr />
         </div>
         {isOpen && <>
@@ -161,7 +165,7 @@ function Chat({ user }) {
               :
               <RequestP>
                 Chat with me.<br />
-                Clicking &quot;Request Chat&quot; will notify me and I&apos;ll do my best to become available.
+                Clicking &quot;Chat&quot; will notify me and I&apos;ll do my best to become available.
               </RequestP>
             }
           </div>
@@ -180,12 +184,12 @@ function Chat({ user }) {
               />
               <SendButton isActive={!!input.trim() && isConnected} onClick={sendMessage}>Send</SendButton>
             </>
-              : <RequestButton onClick={handleRequestChat}>Request Chat</RequestButton>}
+              : <RequestButton onClick={handleRequestChat}>Chat</RequestButton>}
           </div>
         </>}
       </div>
     </ChatContainer>
-  </> : null);
+  </>);
 }
 
 Chat.propTypes = {
@@ -222,6 +226,7 @@ const ChatContainer = styled.div`
   }
 
   .chatHeader {
+    position: relative;
     cursor: pointer;
     h2 {
       display: inline-block;
@@ -295,6 +300,45 @@ const ChatContainer = styled.div`
       display: inline-block;
     }
   `}
+`;
+
+const StatusCircle = styled.span`
+    position: absolute;
+    top: 0.8em;
+    right: 0.7em;
+    width: 0.6em;
+    height: 0.6em;
+    border-radius: 50%;
+    background: ${({ isConnected }) => isConnected ? '#008506' : '#ccc'};
+
+    // &:hover:after {
+    //   content: attr(data-tooltip); /* Use the data-tooltip attribute to hold the tooltip text */
+    //   visibility: visible;
+    //   width: 120px;
+    //   background-color: black;
+    //   color: #fff;
+    //   text-align: center;
+    //   border-radius: 6px;
+    //   padding: 5px 0;
+      
+    //   /* Positioning */
+    //   position: absolute;
+    //   z-index: 1;
+    //   bottom: 100%;
+    //   left: 50%;
+    //   transform: translateX(-50%);
+    //   white-space: nowrap;
+    // }
+    // &:hover:before {
+    //   content: '';
+    //   position: absolute;
+    //   bottom: 100%;
+    //   left: 50%;
+    //   margin-left: -5px;
+    //   border-width: 5px;
+    //   border-style: solid;
+    //   border-color: transparent transparent black transparent;
+    // }
 `;
 
 const RequestP = styled.p`
