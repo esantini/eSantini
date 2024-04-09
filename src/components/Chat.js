@@ -3,7 +3,11 @@ import PropTypes from 'prop-types';
 import { trackEvent, requestChat } from 'utils';
 import styled from '@emotion/styled';
 
-function Chat({ user, ws }) {
+const getWebSocketUrl = (localIp) => isLocalhost ? `ws://${localIp}:8080` : 'wss://esantini.com:8080';
+const CHAT_ENABLED = isLocalhost;
+
+function Chat({ user }) {
+  const [webSocket, setWebSocket] = useState(null);
   const [messages, setMessages] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
   const [isRequested, setIsRequested] = useState(false);
@@ -13,6 +17,18 @@ function Chat({ user, ws }) {
   const messagesUl = useRef(null);
 
   useEffect(() => {
+    if (CHAT_ENABLED && isRequested && !webSocket) {
+      if (isLocalhost) {
+        fetch('api/localIp').then(r => r.json()).then(({ localIp }) => {
+          setWebSocket(new WebSocket(getWebSocketUrl(localIp)));
+        });
+      } else {
+        setWebSocket(new WebSocket(getWebSocketUrl()));
+      }
+    }
+  }, [isRequested]);
+
+  useEffect(() => {
     if (user?.name) {
       const userName = user.name.split(' ')[0];
       setName(userName);
@@ -20,16 +36,20 @@ function Chat({ user, ws }) {
   }, [user]);
 
   useEffect(() => {
-    if (ws) {
-      ws.onopen = () => pushMessage({ notification: 'Connected.' });
-      ws.onclose = () => pushMessage({ notification: 'Disconnected.' });
-      ws.onerror = (error) => console.error('WebSocket error:', error);
-      ws.onmessage = (event) => pushMessage(JSON.parse(event.data));
+    if (webSocket) {
+      webSocket.onopen = () => pushMessage({ notification: 'Connected.' });
+      webSocket.onclose = () => {
+        setWebSocket(null);
+        // TODO setIsRequested(false);
+        pushMessage({ notification: 'Disconnected.' });
+      };
+      webSocket.onerror = (error) => console.error('WebSocket error:', error);
+      webSocket.onmessage = (event) => pushMessage(JSON.parse(event.data));
       return () => {
-        ws.close();
+        webSocket.close();
       };
     }
-  }, [ws]);
+  }, [webSocket]);
 
   useEffect(() => {
     if (messagesUl.current) {
@@ -49,21 +69,24 @@ function Chat({ user, ws }) {
   const sendMessage = useCallback(() => {
     const newMessage = input.trim();
     if (!newMessage) return;
-    if (ws && ws.readyState === WebSocket.OPEN) {
-      ws.send(JSON.stringify({ name, message: newMessage }));
+    if (webSocket && webSocket.readyState === WebSocket.OPEN) {
+      webSocket.send(JSON.stringify({ name, message: newMessage }));
       setInput('');
     } else {
       pushMessage({ notification: 'Cant send message.' });
     }
-  }, [input, ws, name]);
+  }, [input, webSocket, name]);
 
   const handleRequestChat = useCallback(() => {
     setIsLoading(true);
-    requestChat(name, ({ errors, ...d }) => {
-      console.log({ d, errors });
+    requestChat(name, ({ errors, data }) => {
       if (errors && errors.length) {
         throw new Error(errors);
       }
+
+      const resData = data.requestChat;
+      const oldMessages = resData && resData.length ? resData.reverse() : [];
+      setMessages(msgs => oldMessages.concat(msgs));
       setIsRequested(true);
     }).catch((errors) => {
       for (let err of errors) {
@@ -135,7 +158,6 @@ function Chat({ user, ws }) {
 
 Chat.propTypes = {
   user: PropTypes.object,
-  ws: PropTypes.object,
 };
 
 export default Chat;
@@ -149,7 +171,7 @@ const ChatContainer = styled.div`
   max-height: 15em;
   overflow: hidden;
 
-  display: flex;
+  display: ${CHAT_ENABLED ? 'flex' : 'none'};
   flex-direction: column;
   justify-content: space-between;
 
@@ -221,6 +243,7 @@ const ChatContainer = styled.div`
         max-width: 1000px;
         background-color: black;
         opacity: 0.5;
+        z-index: 1;
       }
     `}
   }
