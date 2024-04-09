@@ -3,12 +3,13 @@ import styled from '@emotion/styled';
 import githubLogo from 'assets/images/GitHub_Logo_Black.png';
 import octocat from 'assets/images/Octocat.png';
 
-const GithubLink = ({ compact = false }) => (
+const GithubLink = ({ compact = false, onClick = () => { } }) => (
   <A
     compact={compact}
     href="https://github.com/esantini/eSantini"
     target="_blank"
     rel="noopener noreferrer"
+    onClick={onClick}
   >
     {!compact && (
       <img
@@ -23,6 +24,7 @@ const GithubLink = ({ compact = false }) => (
 
 GithubLink.propTypes = {
   compact: PropTypes.bool,
+  onClick: PropTypes.func,
 };
 
 export default GithubLink;

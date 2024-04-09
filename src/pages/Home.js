@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import styled from '@emotion/styled';
 import { GithubLink, LatestProjects, ExternalLink } from 'components';
+import { trackEvent } from 'utils';
 
 import logo from 'assets/svg/logo.svg';
 import linkedIn from 'assets/images/LI-Logo.png';
@@ -43,9 +44,13 @@ const Home = ({ user }) => {
       </IntroWrapper>
 
       <ProfileLinks>
-        <GithubLink showOctocat={true} />
+        <GithubLink
+          showOctocat={true}
+          onClick={() => trackEvent('click', 'Home Page', 'GitHub', 'image')}
+        />
         <ExternalLink
           className='linkedInLink'
+          onClick={() => trackEvent('click', 'Home Page', 'LinkedIn', 'image')}
           href='https://www.linkedin.com/in/estebansantini/'
         >
           <img src={linkedIn} alt='linkedIn logo' />
