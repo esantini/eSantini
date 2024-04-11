@@ -5,6 +5,7 @@ import {
   deleteSession,
   setChatId,
   requestChat,
+  useWebSocket,
   fetchChatMessages,
   fetchConversations,
 } from './apiUtils';
@@ -24,6 +25,7 @@ export {
   deleteSession,
   setChatId,
   requestChat,
+  useWebSocket,
   fetchChatMessages,
   fetchConversations,
   getWeather,

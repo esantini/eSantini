@@ -1,3 +1,5 @@
+import { useEffect, useState, useCallback } from 'react';
+
 const fetchUser = async (setUser, setIsLoading) => {
   try {
     const res = await fetch('/api/me');
@@ -187,12 +189,74 @@ const setChatId = (chatId, callback) => {
     .catch(console.error);
 }
 
+const getWebSocketUrl = (localIp) => isLocalhost ? `ws://${localIp}:8080/chatsocket` : 'wss://esantini.com/chatsocket';
+const useWebSocket = (setMessages) => {
+  const [webSocket, setWebSocket] = useState(null);
+  const [isConnected, setIsConnected] = useState(false);
+
+  const pushMessage = useCallback((message) => {
+    setMessages((prevMessages) => [...prevMessages, message]);
+  }, [setMessages]);
+
+  useEffect(() => {
+    if (webSocket) {
+      webSocket.onopen = () => {
+        setIsConnected(true);
+        // pushMessage({ notification: 'Connected.' });
+      };
+      webSocket.onclose = () => {
+        setIsConnected(false);
+        // pushMessage({ notification: 'Disconnected.' });
+      };
+      webSocket.onerror = (error) => console.error('WebSocket error:', error);
+      webSocket.onmessage = (event) => pushMessage(JSON.parse(event.data));
+      return () => {
+        setIsConnected(false);
+        webSocket.close();
+      };
+    }
+  }, [webSocket]);
+
+  const connectWebSocket = useCallback(() => {
+    if (isLocalhost) {
+      fetch('api/localIp').then(r => r.json()).then(({ localIp }) => {
+        setWebSocket(new WebSocket(getWebSocketUrl(localIp)));
+      });
+    } else {
+      setWebSocket(new WebSocket(getWebSocketUrl()));
+    }
+  }, []);
+
+  const closeWebSocket = useCallback(() => {
+    if (webSocket) {
+      webSocket.close();
+    }
+  }, [webSocket]);
+
+  const sendMessage = useCallback((msgObject, callback) => {
+    if (isConnected) {
+      webSocket.send(JSON.stringify(msgObject));
+      callback();
+    } else {
+      pushMessage({ notification: 'Can\'t send message.' });
+    }
+  }, [isConnected, webSocket, pushMessage]);
+
+  return {
+    sendMessage,
+    isConnected,
+    closeWebSocket,
+    connectWebSocket,
+  }
+}
+
 export {
   fetchUser,
   fetchData,
   fetchSessions,
   deleteSession,
   requestChat,
+  useWebSocket,
   fetchConversations,
   fetchChatMessages,
   setChatId,

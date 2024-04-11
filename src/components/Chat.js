@@ -1,21 +1,25 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import PropTypes from 'prop-types';
-import { trackEvent, requestChat, fetchChatMessages } from 'utils';
+import { trackEvent, requestChat, fetchChatMessages, useWebSocket } from 'utils';
 import ChatConversations from './ChatConversations';
 import styled from '@emotion/styled';
-
-const getWebSocketUrl = (localIp) => isLocalhost ? `ws://${localIp}:8080/chatsocket` : 'wss://esantini.com/chatsocket';
 
 function Chat({ user }) {
   const [input, setInput] = useState('');
   const [name, setName] = useState('Guest');
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState([]);
-  const [webSocket, setWebSocket] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [adminChatId, setAdminChatId] = useState(null);
-  const [isConnected, setIsConnected] = useState(false);
   const [isRequested, setIsRequested] = useState(false);
+
+  const {
+    isConnected,
+    sendMessage,
+    closeWebSocket,
+    connectWebSocket,
+  } = useWebSocket(setMessages);
+
   const messagesUl = useRef(null);
 
   useEffect(() => {
@@ -26,25 +30,6 @@ function Chat({ user }) {
   }, [user]);
 
   useEffect(() => {
-    if (webSocket) {
-      webSocket.onopen = () => {
-        setIsConnected(true);
-        // pushMessage({ notification: 'Connected.' });
-      };
-      webSocket.onclose = () => {
-        setIsConnected(false);
-        // pushMessage({ notification: 'Disconnected.' });
-      };
-      webSocket.onerror = (error) => console.error('WebSocket error:', error);
-      webSocket.onmessage = (event) => pushMessage(JSON.parse(event.data));
-      return () => {
-        setIsConnected(false);
-        webSocket.close();
-      };
-    }
-  }, [webSocket]);
-
-  useEffect(() => {
     if (messagesUl.current) {
       messagesUl.current.scrollTop = messagesUl.current.scrollHeight;
     }
@@ -52,11 +37,9 @@ function Chat({ user }) {
 
   useEffect(() => {
     if (adminChatId) {
-      if (webSocket) {
-        webSocket.close();
-        setWebSocket(null);
-      }
+      closeWebSocket();
       setIsLoading(true);
+      setIsRequested(false);
       fetchChatMessages(adminChatId, ({ data, errors }) => {
         if (errors && errors.length) {
           throw new Error(errors);
@@ -69,16 +52,6 @@ function Chat({ user }) {
     }
   }, [adminChatId]);
 
-  const connectWebSocket = useCallback(() => {
-    if (isLocalhost) {
-      fetch('api/localIp').then(r => r.json()).then(({ localIp }) => {
-        setWebSocket(new WebSocket(getWebSocketUrl(localIp)));
-      });
-    } else {
-      setWebSocket(new WebSocket(getWebSocketUrl()));
-    }
-  }, []);
-
   useEffect(() => {
     if (isRequested && !isConnected) {
       connectWebSocket();
@@ -90,20 +63,11 @@ function Chat({ user }) {
     trackEvent('click', 'Chatini', 'Header', isOpen ? 'Close' : 'Open');
   }, [isOpen]);
 
-  const pushMessage = useCallback((message) => {
-    setMessages((prevMessages) => [...prevMessages, message]);
-  }, []);
-
-  const sendMessage = useCallback(() => {
-    const newMessage = input.trim();
-    if (!newMessage) return;
-    if (webSocket && webSocket.readyState === WebSocket.OPEN) {
-      webSocket.send(JSON.stringify({ name, message: newMessage }));
-      setInput('');
-    } else {
-      pushMessage({ notification: 'Cant send message.' });
-    }
-  }, [input, webSocket, name]);
+  const handleSendMessage = useCallback(() => {
+    const message = input.trim();
+    if (!message) return;
+    sendMessage({ name, message }, () => setInput(''));
+  }, [input, isConnected, sendMessage, name]);
 
   const handleRequestChat = useCallback(() => {
     setIsLoading(true);
@@ -116,7 +80,6 @@ function Chat({ user }) {
       const oldMessages = resData && resData.length ? resData.reverse() : [];
       setMessages(msgs => oldMessages.concat(msgs));
       setIsRequested(true);
-      connectWebSocket();
     }).catch((errors) => {
       for (let err of errors) {
         console.error('Failed to request chat:', err);
@@ -178,11 +141,11 @@ function Chat({ user }) {
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={(e) => {
                   if (e.key === 'Enter') {
-                    sendMessage();
+                    handleSendMessage();
                   }
                 }}
               />
-              <SendButton isActive={!!input.trim() && isConnected} onClick={sendMessage}>Send</SendButton>
+              <SendButton isActive={!!input.trim() && isConnected} onClick={handleSendMessage}>Send</SendButton>
             </>
               : <RequestButton onClick={handleRequestChat}>Chat</RequestButton>}
           </div>
