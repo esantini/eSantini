@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import PropTypes from 'prop-types';
-import GoogleLoginButton from '../components/GoogleLoginButton';
+import { GoogleLoginButton } from '../components';
 import { logOut } from 'utils';
 import styled from '@emotion/styled';
 import defaultProfileImg from 'assets/images/default-profile-img.png';

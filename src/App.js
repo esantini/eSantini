@@ -2,11 +2,7 @@ import { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 
-import CornerLogo from 'components/CornerLogo';
-import NavMenu from 'components/NavMenu';
-import Chat from 'components/Chat';
-import PageAnalytics from 'components/PageAnalytics';
-import MyDebugger from 'components/MyDebugger';
+import { CornerLogo, NavMenu, Chat, PageAnalytics, MyDebugger } from 'components';
 import Home from 'pages/Home';
 import Login from 'pages/Login';
 import RaspberryPi from 'pages/RaspberryPi';
