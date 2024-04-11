@@ -8,7 +8,7 @@ import Chat from 'components/Chat';
 import PageAnalytics from 'components/PageAnalytics';
 import MyDebugger from 'components/MyDebugger';
 import Home from 'pages/Home';
-import Login from 'pages/auth/Login';
+import Login from 'pages/Login';
 import RaspberryPi from 'pages/RaspberryPi';
 import CameraStream from 'pages/CameraStream';
 import Analytics from 'pages/Analytics';

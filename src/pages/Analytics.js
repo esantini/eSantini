@@ -1,7 +1,7 @@
 import { Fragment, useState, useEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import WorldMap from 'components/analytics/WorldMap';
-import ConfirmationModal from 'components/ConfirmationModal';
+import ConfirmationModal from 'components/modals/ConfirmationModal';
 import styled from '@emotion/styled';
 import { fetchSessions, deleteSession, getFormattedDate } from 'utils';
 
