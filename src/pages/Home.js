@@ -1,13 +1,13 @@
 import { useEffect } from 'react';
-import PropTypes from 'prop-types';
 import styled from '@emotion/styled';
 import { GithubLink, LatestProjects, ExternalLink } from 'components';
-import { trackEvent } from 'utils';
+import { trackEvent, useUser } from 'utils';
 
 import logo from 'assets/svg/logo.svg';
 import linkedIn from 'assets/images/LI-Logo.png';
 
-const Home = ({ user }) => {
+const Home = () => {
+  const [user] = useUser();
   useEffect(() => {
     document.title = 'eSantini - Web Development';
   }, []);
@@ -63,10 +63,6 @@ const Home = ({ user }) => {
     </>
   );
 }
-
-Home.propTypes = {
-  user: PropTypes.object,
-};
 
 export default Home;
 

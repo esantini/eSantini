@@ -9,14 +9,14 @@ import RaspberryPi from 'pages/RaspberryPi';
 import CameraStream from 'pages/CameraStream';
 import Analytics from 'pages/Analytics';
 
-import { fetchUser } from 'utils';
+import { fetchUser, useUser } from 'utils';
 
 import toasty from 'assets/images/spiderToasty.png';
 
 const CLIENT_ID = '482181895955-i27hea4kgp5s8u67gvsgl56k7t1l966s.apps.googleusercontent.com';
 
 function App() {
-  const [user, setUser] = useState(null);
+  const [, setUser] = useUser();
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -28,22 +28,14 @@ function App() {
       <Router>
         <PageAnalytics />
         <main>
-          <NavMenu user={user} setUser={setUser} isLoading={isLoading} />
+          <NavMenu isLoading={isLoading} />
           <CornerLogo />
           <Switch>
-            <Route exact path="/">
-              <Home user={user} />
-            </Route>
+            <Route exact path="/" component={Home} />
             <Route path="/raspberrypi" component={RaspberryPi} />
-            <Route path="/camera">
-              <CameraStream user={user} />
-            </Route>
-            <Route path="/login">
-              <Login user={user} setUser={setUser} />
-            </Route>
-            <Route path="/analytics" >
-              <Analytics user={user} />
-            </Route>
+            <Route path="/camera" component={CameraStream} />
+            <Route path="/login" component={Login} />
+            <Route path="/analytics" component={Analytics} />
             <MyDebugger />
           </Switch>
         </main>
@@ -51,7 +43,7 @@ function App() {
           <img alt="Konami Code" src={toasty} loading="lazy" />
         </div>
       </Router>
-      <Chat user={user} />
+      <Chat />
     </GoogleOAuthProvider>
   );
 }

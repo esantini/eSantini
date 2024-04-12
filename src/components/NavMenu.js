@@ -1,13 +1,13 @@
 import { useEffect, useState, useRef, useCallback } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import PropTypes from 'prop-types';
-
-import { logOut, useClickOutside, trackEvent } from 'utils';
+import { logOut, useClickOutside, trackEvent, useUser } from 'utils';
 import defaultProfileImg from 'assets/images/default-profile-img.png';
 import styled from '@emotion/styled';
 
-const NavMenu = ({ user, setUser, isLoading }) => {
+const NavMenu = ({ isLoading }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [user, setUser] = useUser();
   const wrapperRef = useRef(null);
   const location = useLocation();
   const { pathname } = location;
@@ -91,8 +91,6 @@ const NavMenu = ({ user, setUser, isLoading }) => {
   );
 }
 NavMenu.propTypes = {
-  user: PropTypes.object,
-  setUser: PropTypes.func,
   isLoading: PropTypes.bool,
 };
 

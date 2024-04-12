@@ -9,6 +9,7 @@ import {
   fetchChatMessages,
   fetchConversations,
 } from './apiUtils';
+import { useUser } from 'components/UserProvider';
 import { logOut } from './authUtils';
 import { setLight, getLight } from './lightControls';
 import { getWeather, setMessage, getCurrentMessage } from './miscApiCalls';
@@ -17,6 +18,7 @@ import { getFormattedDate, useClickOutside } from './commonUtils';
 
 export {
   logOut,
+  useUser,
   setLight,
   getLight,
   fetchUser,

@@ -1,16 +1,16 @@
 import { Fragment, useState, useEffect, useCallback } from 'react';
-import PropTypes from 'prop-types';
 import WorldMap from 'components/analytics/WorldMap';
 import ConfirmationModal from 'components/modals/ConfirmationModal';
 import styled from '@emotion/styled';
-import { fetchSessions, deleteSession, getFormattedDate } from 'utils';
+import { fetchSessions, deleteSession, getFormattedDate, useUser } from 'utils';
 
-const Analytics = ({ user }) => {
+const Analytics = () => {
   const [points, setPoints] = useState([]);
   const [sessions, setSessions] = useState([]);
   const [selectedSession, setSelectedSession] = useState({});
   const [toDeleteId, setToDeleteId] = useState(-1);
   const [isLoading, setIsLoading] = useState(true);
+  const [user] = useUser();
 
   useEffect(() => {
     document.title = 'Analytics - eSantini';
@@ -100,10 +100,6 @@ const Analytics = ({ user }) => {
     </div>
   );
 }
-
-Analytics.propTypes = {
-  user: PropTypes.object,
-};
 
 export default Analytics;
 

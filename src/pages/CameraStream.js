@@ -1,9 +1,10 @@
 import { useEffect } from 'react';
-import PropTypes from 'prop-types';
 import styled from '@emotion/styled';
+import { useUser } from 'utils';
 import videoLocked from 'assets/images/video-locked.png';
 
-const CameraStream = ({ user }) => {
+const CameraStream = () => {
+  const [user] = useUser();
   useEffect(() => {
     document.title = 'Camera Stream - eSantini';
   }, []);
@@ -26,10 +27,6 @@ const CameraStream = ({ user }) => {
       </PlayerWrapper>
     </>
   );
-};
-
-CameraStream.propTypes = {
-  user: PropTypes.object,
 };
 
 export default CameraStream;

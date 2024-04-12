@@ -1,11 +1,11 @@
 import { useEffect } from 'react';
-import PropTypes from 'prop-types';
-import { GoogleLoginButton } from '../components';
-import { logOut } from 'utils';
+import { GoogleLoginButton } from 'components';
+import { logOut, useUser } from 'utils';
 import styled from '@emotion/styled';
 import defaultProfileImg from 'assets/images/default-profile-img.png';
 
-const Login = ({ user, setUser }) => {
+const Login = () => {
+  const [user, setUser] = useUser();
   useEffect(() => {
     document.title = 'Login - eSantini';
   }, []);
@@ -33,11 +33,6 @@ const Login = ({ user, setUser }) => {
         <GoogleLoginButton setUser={setUser} />
       </>}
   </>;
-};
-
-Login.propTypes = {
-  user: PropTypes.object,
-  setUser: PropTypes.func,
 };
 
 export default Login;

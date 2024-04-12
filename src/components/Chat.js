@@ -1,10 +1,9 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import PropTypes from 'prop-types';
-import { trackEvent, requestChat, fetchChatMessages, useWebSocket } from 'utils';
-import ChatConversations from './ChatConversations';
+import { trackEvent, requestChat, fetchChatMessages, useWebSocket, useUser } from 'utils';
+import { ChatConversations } from 'components';
 import styled from '@emotion/styled';
 
-function Chat({ user }) {
+function Chat() {
   const [input, setInput] = useState('');
   const [name, setName] = useState('Guest');
   const [isOpen, setIsOpen] = useState(false);
@@ -12,6 +11,7 @@ function Chat({ user }) {
   const [isLoading, setIsLoading] = useState(false);
   const [adminChatId, setAdminChatId] = useState(null);
   const [isRequested, setIsRequested] = useState(false);
+  const [user] = useUser();
 
   const {
     isConnected,
@@ -154,10 +154,6 @@ function Chat({ user }) {
     </ChatContainer>
   </>);
 }
-
-Chat.propTypes = {
-  user: PropTypes.object,
-};
 
 export default Chat;
 

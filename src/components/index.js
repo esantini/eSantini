@@ -7,9 +7,11 @@ export { default as MyDebugger } from './MyDebugger';
 export { default as GithubLink } from './GithubLink';
 export { default as InputMessage } from './InputMessage';
 export { default as ExternalLink } from './ExternalLink';
+export { default as UserProvider } from './UserProvider';
 export { default as PageAnalytics } from './PageAnalytics';
 export { default as LatestProjects } from './LatestProjects';
 export { default as ProjectRaspberry } from './ProjectRaspberry';
+export { default as ChatConversations } from './ChatConversations';
 export { default as GoogleLoginButton } from './GoogleLoginButton';
 
 export const Hr = styled.hr`
