@@ -17,7 +17,7 @@ const Home = () => {
         <Logo src={logo} alt='logo' />
       </header>
 
-      <HelloW className="helloWorld">Hello {user?.name ? user.name : 'World'}!</HelloW>
+      <HelloW>Hello {user?.name ? user.name : 'World'}!</HelloW>
 
       <IntroWrapper>
         <Desc style={{ marginTop: '1rem' }}>

@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { trackEvent, requestChat, fetchChatMessages, useWebSocket, useUser } from 'utils';
-import { ChatConversations } from 'components';
+import { ChatConversations, Input, Button } from 'components';
+import RequestChatModal from './modals/RequestChatModal';
 import styled from '@emotion/styled';
 
 function Chat() {
@@ -91,6 +92,7 @@ function Chat() {
   }, []);
 
   return (<>
+    <RequestChatModal isOpen={false} />
     <ChatContainer isOpen={isOpen} isLoading={isLoading} isAdmin={user?.isAdmin}>
       {user?.isAdmin && isOpen &&
         <ChatConversations selectedId={adminChatId} setChatId={setAdminChatId} />
@@ -134,7 +136,7 @@ function Chat() {
           </div>
           <div className="inputWrapper">
             {isRequested || user?.isAdmin ? <>
-              <input
+              <Input
                 value={input}
                 disabled={!isConnected}
                 placeholder="Type a message..."
@@ -145,9 +147,15 @@ function Chat() {
                   }
                 }}
               />
-              <SendButton isActive={!!input.trim() && isConnected} onClick={handleSendMessage}>Send</SendButton>
+              <Button
+                className="sendButton"
+                disabled={!input.trim() || !isConnected}
+                onClick={handleSendMessage}
+              >
+                Send
+              </Button>
             </>
-              : <RequestButton onClick={handleRequestChat}>Chat</RequestButton>}
+              : <Button className="requestButton" onClick={handleRequestChat}>Chat</Button>}
           </div>
         </>}
       </div>
@@ -231,22 +239,15 @@ const ChatContainer = styled.div`
     gap: .5em;
     input {
       width: 80%;
-      padding: .5em;
-      font-size: 0.9em;
-      padding-left: 1em;
-      border-radius: 1.1em;
-      height: 1.6em;
-      &:focus {
-        outline: none;
-        background: #fdf9d6;
-        box-shadow: 0 0 0.5em 0.2em #fdf9d6;
-      }
-      
-      transition: background .2s ease, box-shadow .2s ease;
     }
-    input, button {
-      border: 0;
-    }
+  }
+
+  .sendButton {
+    width: 20%;
+  }
+
+  .requestButton {
+    width: 100%;
   }
 
   .spinner {
@@ -305,39 +306,3 @@ const RequestP = styled.p`
   margin: 0;
   color: #888;
 `;
-const RequestButton = styled.button`
-  width: 100%;
-  font-size: 1em;
-  font-weight: bold;
-  background: none;
-  height: 2em;
-  border-radius: 0.6em;
-  color: #008506;
-  cursor: pointer;
-  background: #e0ebe1;
-  &:hover {
-    color: #005203;
-    background: #cce6cf;
-  }
-
-`;
-
-const SendButton = styled.button`
-  width: 20%;
-  font-size: 0.7em;
-  font-weight: bold;
-  background: none;
-  height: 2em;
-  border-radius: 0.6em;
-
-  ${({ isActive }) => isActive ? `
-    color: #008506;
-    cursor: pointer;
-    &:hover {
-      color: #005203;
-      background: #e0ebe1;
-    }
-  ` : 'color: #ccc;' // disabled
-  }
-`;
-

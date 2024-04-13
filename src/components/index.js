@@ -21,3 +21,36 @@ export const Hr = styled.hr`
   width: 80%;
   margin: 1.5em 0;
 `;
+
+export const Input = styled.input`
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 0.6em;
+  font-size: 0.6em;
+  outline: none;
+  transition: border-color 0.2s ease;
+  &:focus {
+    border-color: #3f7204;
+  }
+`;
+
+export const Button = styled.button`
+  font-size: 0.7em;
+  font-weight: bold;
+  background: none;
+  height: 2em;
+  border-radius: 0.6em;
+  border: 0;
+
+  ${({ disabled }) => disabled ?
+    'color: #ccc;' :
+    `
+    background: #e0ebe1;
+    color: #008506;
+    cursor: pointer;
+    &:hover {
+      color: #005203;
+      background: #cce6cf;
+    }
+  `}
+`;
