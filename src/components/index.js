@@ -41,6 +41,8 @@ export const Button = styled.button`
   height: 2em;
   border-radius: 0.6em;
   border: 0;
+  padding-left: 1em;
+  padding-right: 1em;
 
   ${({ disabled }) => disabled ?
     'color: #ccc;' :

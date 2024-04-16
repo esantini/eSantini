@@ -11,6 +11,7 @@ function Chat() {
   const [messages, setMessages] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [adminChatId, setAdminChatId] = useState(null);
+  const [isRequestModalOpen, setIsRequestModalOpen] = useState(false);
   const [isRequested, setIsRequested] = useState(false);
   const [user] = useUser();
 
@@ -91,8 +92,21 @@ function Chat() {
     trackEvent('click', 'Chatini', 'Request Chat');
   }, []);
 
+  const handleChatButtonClick = useCallback(() => {
+    if (user) {
+      handleRequestChat();
+    }
+    else {
+      setIsRequestModalOpen(true);
+    }
+  }, [user, handleRequestChat]);
+
   return (<>
-    <RequestChatModal isOpen={false} />
+    <RequestChatModal
+      isOpen={isRequestModalOpen}
+      onConfirm={handleRequestChat}
+      onCancel={() => setIsRequestModalOpen(false)}
+    />
     <ChatContainer isOpen={isOpen} isLoading={isLoading} isAdmin={user?.isAdmin}>
       {user?.isAdmin && isOpen &&
         <ChatConversations selectedId={adminChatId} setChatId={setAdminChatId} />
@@ -155,7 +169,7 @@ function Chat() {
                 Send
               </Button>
             </>
-              : <Button className="requestButton" onClick={handleRequestChat}>Chat</Button>}
+              : <Button className="requestButton" onClick={handleChatButtonClick}>Chat</Button>}
           </div>
         </>}
       </div>

@@ -16,5 +16,5 @@ export const logOut = async (setUser) => {
     console.error('Failed to log out:', error);
   }
   localStorage.removeItem('credential');
-  setUser({});
+  setUser(null);
 };
